@@ -312,7 +312,7 @@ function onGameState(data){
   const me = myPlayers && myPlayers.find(p => p.playerName === myName);
   if(me && me.onCouch){
     disableBuzz();
-    setStatus('You are on the couch 🛋️ — wait to be brought back', '');
+    setStatus('You are on the couch — wait to be brought back', '');
   } else {
     enableBuzz();
     setStatus('Ready! Buzz when you know the answer.', 'ready');
