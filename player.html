@@ -220,8 +220,7 @@ let phase='idle', buzzLocked=false;
 // Set team badge color
 const badge=document.getElementById('ns-team-badge');
 badge.className='ns-team t'+TEAM;
-badge.textContent = TEAM==='a' ? 'Team A' : TEAM==='b' ? 'Team B' : 'Team ???';
-console.log('TEAM:', TEAM, 'GAME:', GAME_ID);
+badge.textContent = TEAM==='a' ? 'Team A' : 'Team B';
 // Name entry
 document.getElementById('join-btn').addEventListener('click',joinGame);
 document.getElementById('player-name-input').addEventListener('keydown',e=>{if(e.key==='Enter') joinGame();});
