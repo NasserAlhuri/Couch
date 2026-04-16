@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>Couch Challenge — Buzzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --red:#E24B4A;--red-l:#FCEBEB;--red-d:#A32D2D;
+  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#185FA5;
+  --gold:#EF9F27;
+  --bg:#0f0f0f;--card:#1a1a1a;--border:#333;
+  --text:#f0f0f0;--muted:#888;
+}
+html,body{width:100%;height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+
+/* ── NAME ENTRY ── */
+#name-screen{
+  position:fixed;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:2rem;text-align:center;
+  background:var(--bg);z-index:50;
+}
+.ns-logo{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:3px;color:var(--gold);margin-bottom:.25rem}
+.ns-sub{font-size:.9rem;color:var(--muted);margin-bottom:2rem}
+.ns-team{font-size:.8rem;font-weight:700;padding:.35rem .9rem;border-radius:20px;display:inline-block;margin-bottom:2rem}
+.ns-team.ta{background:var(--red-l);color:var(--red-d)}
+.ns-team.tb{background:var(--blue-l);color:var(--blue-d)}
+.ns-field{width:100%;max-width:280px;margin-bottom:1rem}
+.ns-input{
+  width:100%;background:#1a1a1a;border:1.5px solid var(--border);border-radius:12px;
+  padding:.85rem 1rem;font-size:1.1rem;color:var(--text);font-family:'DM Sans',sans-serif;
+  outline:none;text-align:center;transition:border .15s;
+}
+.ns-input:focus{border-color:var(--gold)}
+.ns-btn{
+  width:100%;max-width:280px;padding:.85rem;
+  background:var(--gold);color:#000;border:none;border-radius:12px;
+  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;
+  cursor:pointer;transition:opacity .15s;
+}
+.ns-btn:hover{opacity:.88}
+.ns-err{font-size:.8rem;color:var(--red);margin-top:.5rem;min-height:1.2rem}
+
+/* ── LOADING ── */
+#loading{
+  position:fixed;inset:0;display:none;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:2rem;background:var(--bg);z-index:40;
+}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:1rem auto 0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PLAYER GAME ── */
+#player{
+  display:none;width:100%;height:100%;flex-direction:column;
+  align-items:stretch;position:fixed;inset:0;
+}
+
+.p-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.75rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.p-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--gold)}
+.p-name-badge{font-size:.8rem;font-weight:700;padding:.3rem .75rem;border-radius:20px}
+.p-name-badge.ta{background:var(--red-l);color:var(--red-d)}
+.p-name-badge.tb{background:var(--blue-l);color:var(--blue-d)}
+
+.status-bar{
+  padding:.6rem 1.25rem;background:var(--card);border-bottom:1px solid var(--border);
+  text-align:center;font-size:.85rem;color:var(--muted);flex-shrink:0;
+  min-height:40px;display:flex;align-items:center;justify-content:center;transition:all .3s;
+}
+.status-bar.ready{color:var(--gold);font-weight:500}
+.status-bar.buzzed-me{background:#071a04;color:#9fce60;font-weight:700}
+.status-bar.buzzed-other{background:#1a0707;color:var(--red);font-weight:500}
+
+.q-area{
+  padding:.85rem 1.25rem;text-align:center;flex-shrink:0;
+  border-bottom:1px solid var(--border);min-height:72px;
+  display:flex;align-items:center;justify-content:center;
+}
+.q-txt{font-size:.95rem;font-weight:500;line-height:1.5;color:var(--text)}
+.q-placeholder{color:var(--muted);font-size:.9rem}
+
+/* ── BUZZER ── */
+.buzzer-area{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:1.5rem;gap:1rem;
+}
+
+.buzz-btn{
+  width:min(240px,65vw);height:min(240px,65vw);
+  border-radius:50%;border:none;cursor:pointer;
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,2.8rem);
+  letter-spacing:3px;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .1s,box-shadow .15s;
+  user-select:none;-webkit-user-select:none;position:relative;
+}
+.buzz-btn.ta{
+  background:radial-gradient(circle at 35% 35%,#f07070,var(--red) 60%,var(--red-d));
+  box-shadow:0 0 0 10px rgba(226,75,74,.12),0 8px 32px rgba(226,75,74,.4);
+}
+.buzz-btn.tb{
+  background:radial-gradient(circle at 35% 35%,#70a8f0,var(--blue) 60%,var(--blue-d));
+  box-shadow:0 0 0 10px rgba(55,138,221,.12),0 8px 32px rgba(55,138,221,.4);
+}
+.buzz-btn:active:not(.disabled){transform:scale(.92)}
+.buzz-btn.disabled{filter:grayscale(.7);opacity:.45;pointer-events:none}
+.buzz-btn.fired.ta{box-shadow:0 0 0 24px rgba(226,75,74,.2),0 12px 48px rgba(226,75,74,.6)}
+.buzz-btn.fired.tb{box-shadow:0 0 0 24px rgba(55,138,221,.2),0 12px 48px rgba(55,138,221,.6)}
+
+.buzz-hint{font-size:.8rem;color:var(--muted);text-align:center}
+
+/* ── COUCH STATUS ── */
+.couch-strip{
+  border-top:1px solid var(--border);background:var(--card);
+  padding:.75rem 1.25rem;flex-shrink:0;
+}
+.cs-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem}
+.cs-teams{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.cs-team-name{font-size:.7rem;font-weight:700;margin-bottom:.3rem}
+.cs-team-name.ta{color:var(--red)}
+.cs-team-name.tb{color:var(--blue)}
+.dots{display:flex;flex-wrap:wrap;gap:.3rem}
+.dot{width:13px;height:13px;border-radius:50%;border:1.5px solid}
+.dot.ta{background:var(--red-l);border-color:var(--red)}
+.dot.ta.out{opacity:.3;background:transparent;border-style:dashed}
+.dot.tb{background:var(--blue-l);border-color:var(--blue)}
+.dot.tb.out{opacity:.3;background:transparent;border-style:dashed}
+
+/* ── WIN ── */
+#win-screen{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;z-index:100}
+#win-screen.show{display:flex}
+#win-screen h1{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;letter-spacing:3px;color:var(--gold);margin-bottom:.5rem}
+#win-screen p{color:var(--muted)}
+
+#error{display:none;position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;text-align:center;padding:2rem;flex-direction:column;gap:.75rem;z-index:200}
+#error.show{display:flex}
+#error h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--red)}
+#error p{color:var(--muted);font-size:.9rem;max-width:300px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- NAME ENTRY -->
+<div id="name-screen">
+  <div class="ns-logo">🛋️ Couch Challenge</div>
+  <p class="ns-sub">Enter your name to join</p>
+  <div class="ns-team" id="ns-team-badge">Team</div>
+  <div class="ns-field">
+    <input class="ns-input" type="text" id="player-name-input" placeholder="Your name" maxlength="14" autocomplete="off" autocorrect="off"/>
+  </div>
+  <button class="ns-btn" id="join-btn">Join Game</button>
+  <div class="ns-err" id="ns-err"></div>
+</div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--gold)">Connecting...</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- GAME -->
+<div id="player">
+  <div class="p-header">
+    <div class="p-logo">CouchChallenge</div>
+    <div class="p-name-badge" id="p-name-badge">You</div>
+  </div>
+  <div class="status-bar" id="status-bar">Connecting to game...</div>
+  <div class="q-area">
+    <div class="q-txt" id="q-display"><span class="q-placeholder">Question will appear here</span></div>
+  </div>
+  <div class="buzzer-area">
+    <button class="buzz-btn disabled" id="buzz-btn">BUZZ!</button>
+    <div class="buzz-hint" id="buzz-hint">Wait for the question...</div>
+  </div>
+  <div class="couch-strip">
+    <div class="cs-label">Game Status</div>
+    <div class="cs-teams">
+      <div>
+        <div class="cs-team-name ta" id="cs-name-a">Team A</div>
+        <div class="dots" id="cs-dots-a"></div>
+      </div>
+      <div>
+        <div class="cs-team-name tb" id="cs-name-b">Team B</div>
+        <div class="dots" id="cs-dots-b"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="win-screen">
+  <h1 id="win-title">🏆</h1>
+  <p id="win-sub">Game over!</p>
+</div>
+
+<div id="error">
+  <h2>Oops!</h2>
+  <p id="error-msg">Could not connect to the game. Make sure the host has started and try scanning the QR code again.</p>
+</div>
+
+<script>
+const params=new URLSearchParams(window.location.search);
+const GAME_ID=params.get('game');
+const TEAM=params.get('team');
+const PUSHER_KEY=params.get('key');
+const PUSHER_CLUSTER=params.get('cluster');
+
+if(!GAME_ID||!TEAM||!PUSHER_KEY||!PUSHER_CLUSTER){
+  showError('Invalid link. Please scan the QR code from the host screen again.');
+}
+
+let myName='';
+let pusher=null, channel=null;
+let phase='idle', buzzLocked=false;
+
+// Set team badge color
+const badge=document.getElementById('ns-team-badge');
+badge.className='ns-team t'+TEAM;
+badge.textContent=TEAM==='a'?'Team A':'Team B';
+
+// Name entry
+document.getElementById('join-btn').addEventListener('click',joinGame);
+document.getElementById('player-name-input').addEventListener('keydown',e=>{if(e.key==='Enter') joinGame();});
+
+function joinGame(){
+  const name=document.getElementById('player-name-input').value.trim();
+  if(!name){document.getElementById('ns-err').textContent='Please enter your name.';return;}
+  if(name.length<2){document.getElementById('ns-err').textContent='Name too short.';return;}
+  myName=name;
+  document.getElementById('name-screen').style.display='none';
+  document.getElementById('loading').style.display='flex';
+  connectPusher();
+}
+
+function connectPusher(){
+  try{
+    pusher=new Pusher(PUSHER_KEY,{cluster:PUSHER_CLUSTER});
+    pusher.connection.bind('connected',()=>{
+      channel=pusher.subscribe(`game-${GAME_ID}`);
+      channel.bind('pusher:subscription_succeeded',()=>{
+        // Announce join to host
+        notifyHost('join',{team:TEAM,name:myName,gameId:GAME_ID,playerId:`${TEAM}-${myName}`});
+        // Show game UI
+        document.getElementById('loading').style.display='none';
+        document.getElementById('player').style.display='flex';
+        // Setup badge
+        const pb=document.getElementById('p-name-badge');
+        pb.className='p-name-badge t'+TEAM;
+        pb.textContent=myName;
+        // Setup buzzer color
+        document.getElementById('buzz-btn').classList.add('t'+TEAM);
+        setStatus('Connected! Waiting for question...','');
+      });
+      channel.bind('game-state',onGameState);
+      channel.bind('buzzed',onBuzzed);
+      channel.bind('action',onAction);
+      channel.bind('win',onWin);
+    });
+    pusher.connection.bind('failed',()=>showError('Could not connect to game server.'));
+    pusher.connection.bind('unavailable',()=>showError('Connection unavailable. Check your internet.'));
+  }catch(e){showError('Failed to connect: '+e.message);}
+}
+
+// Notify host via fetch to the same endpoint embedded in the URL
+// We read it from a meta tag approach — the player URL contains key+cluster but not endpoint
+// So we use Pusher client events (requires presence channels) OR we rely on host polling
+// Simpler: use a relay via a fixed path on the same Vercel deployment
+async function notifyHost(event, data){
+  // Try Vercel serverless function at /api/pusher
+  try{
+    await fetch('/api/pusher',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({channel:`game-${GAME_ID}`,event,data})
+    });
+  }catch(e){console.warn('notify failed',e);}
+}
+
+function onGameState(data){
+  if(data.gameId!==GAME_ID) return;
+  // Update question
+  if(data.currentQ) document.getElementById('q-display').textContent=data.currentQ;
+  else document.getElementById('q-display').innerHTML='<span class="q-placeholder">Waiting for question...</span>';
+  // Update team names
+  if(data.names){
+    document.getElementById('cs-name-a').textContent=data.names.a;
+    document.getElementById('cs-name-b').textContent=data.names.b;
+  }
+  // Update dots
+  if(data.players){
+    ['a','b'].forEach(t=>{
+      const players=data.players[t]||[];
+      document.getElementById(`cs-dots-${t}`).innerHTML=
+        players.map(p=>`<div class="dot t${t}${p.onCouch?' out':''}" title="${p.label}"></div>`).join('');
+    });
+  }
+  // Phase
+  if(data.phase==='idle'){
+    phase='idle'; buzzLocked=false;
+    enableBuzz();
+    setStatus('Ready! Buzz when you know the answer.','ready');
+  } else if(data.phase==='buzzed'||data.phase==='action'){
+    disableBuzz();
+  }
+}
+
+function onBuzzed(data){
+  if(data.gameId!==GAME_ID) return;
+  phase='buzzed'; disableBuzz();
+  if(data.team===TEAM&&data.name===myName){
+    setStatus('🎉 You buzzed! Wait for the host...','buzzed-me');
+  } else {
+    setStatus(`⚡ ${data.name} buzzed first!`,'buzzed-other');
+  }
+}
+
+function onAction(data){
+  if(data.gameId!==GAME_ID) return;
+  phase='idle'; buzzLocked=false;
+  // State will come via game-state event
+}
+
+function onWin(data){
+  if(data.gameId!==GAME_ID) return;
+  document.getElementById('win-title').textContent=`${data.name} Wins! 🏆`;
+  document.getElementById('win-sub').textContent='All players are on the couch!';
+  document.getElementById('win-screen').classList.add('show');
+}
+
+// ── BUZZER ──
+const buzzBtn=document.getElementById('buzz-btn');
+buzzBtn.addEventListener('click',doBuzz);
+buzzBtn.addEventListener('touchstart',e=>{e.preventDefault();doBuzz();},{passive:false});
+
+function doBuzz(){
+  if(buzzBtn.classList.contains('disabled')) return;
+  if(phase!=='idle'||buzzLocked) return;
+  buzzLocked=true; phase='buzzed';
+  buzzBtn.classList.add('fired');
+  disableBuzz();
+  setStatus('🔔 BUZZED! Waiting for host...','buzzed-me');
+  if(navigator.vibrate) navigator.vibrate([80,30,80]);
+  notifyHost('buzz',{team:TEAM,name:myName,gameId:GAME_ID});
+}
+
+function enableBuzz(){
+  buzzBtn.classList.remove('disabled','fired');
+  document.getElementById('buzz-hint').textContent='Tap fast when you know the answer!';
+}
+function disableBuzz(){
+  buzzBtn.classList.add('disabled');
+  buzzBtn.classList.remove('fired');
+  document.getElementById('buzz-hint').textContent='Wait for next question...';
+}
+
+function setStatus(text,cls){
+  const el=document.getElementById('status-bar');
+  el.textContent=text;
+  el.className='status-bar'+(cls?' '+cls:'');
+}
+
+function showError(msg){
+  document.getElementById('name-screen').style.display='none';
+  document.getElementById('loading').style.display='none';
+  const e=document.getElementById('error');
+  e.classList.add('show');
+  document.getElementById('error-msg').textContent=msg;
+}
+</script>
+</body>
+</html>
