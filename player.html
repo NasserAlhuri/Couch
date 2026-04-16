@@ -306,12 +306,17 @@ function onGameState(data){
     });
   }
   // Phase
-  if(data.phase==='idle'){
-    phase='idle'; buzzLocked=false;
-    enableBuzz();
-    setStatus('Ready! Buzz when you know the answer.','ready');
-  } else if(data.phase==='buzzed'||data.phase==='action'){
+  if(data.phase === 'idle'){
+  phase = 'idle'; buzzLocked = false;
+  // Check if this player is on the couch
+  const myPlayers = data.players && data.players[TEAM];
+  const me = myPlayers && myPlayers.find(p => p.playerName === myName);
+  if(me && me.onCouch){
     disableBuzz();
+    setStatus('You are on the couch 🛋️ — wait to be brought back', '');
+  } else {
+    enableBuzz();
+    setStatus('Ready! Buzz when you know the answer.', 'ready');
   }
 }
 
