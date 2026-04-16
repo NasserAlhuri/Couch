@@ -468,7 +468,11 @@ function onJoinEvent(data){
     currentQ:G.questions[G.qIdx]?G.questions[G.qIdx].q:'',
     qIdx:G.qIdx,round:G.round
   });
-}
+  setTimeout(()=>{ trigger('game-state', {gameId:GAME_ID,names:G.names,sizes:G.sizes,
+    players:G.players,phase:G.phase,
+    currentQ:G.questions[G.qIdx]?G.questions[G.qIdx].q:'',
+    qIdx:G.qIdx,round:G.round}); }, 600);
+  }  
 
 function onBuzzEvent(data){
   const {team,name}=data;
