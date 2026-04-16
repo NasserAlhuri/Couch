@@ -287,6 +287,7 @@ async function notifyHost(event, data){
 }
 
 function onGameState(data){
+  console.log('game-state received', data); // add this line
   if(data.gameId!==GAME_ID) return;
   // Update question
   if(data.currentQ) document.getElementById('q-display').textContent=data.currentQ;
