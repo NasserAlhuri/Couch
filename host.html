@@ -475,10 +475,12 @@ function onJoinEvent(data){
   }  
 
 function onBuzzEvent(data){
+  
   const {team,name}=data;
   if(G.phase!=='idle') return;
   onBuzz(team,name);
 }
+
 
 // ── RENDER ──
 function renderTeams(){
@@ -523,6 +525,7 @@ function loadQuestion(){
 }
 
 function onBuzz(team,playerName){
+  G.buzzedPlayerName = playerName;
   if(G.phase!=='idle') return;
   G.phase='buzzed';G.buzzedTeam=team;
   const item=G.questions[G.qIdx];
@@ -545,7 +548,9 @@ function showActions(team){
   const btns=document.getElementById('action-btns');
   btns.innerHTML='';
   if(myStanding.length>0) addBtn(btns,`✓ Correct — ${G.names[team]} player sits`,()=>doSit(team),'correct');
-  if(oppCouch.length>0) addBtn(btns,`✓ Correct — pull ${G.names[opp]} player back`,()=>doPull(opp),'correct');
+  oppCouch.forEach(p => {
+  addBtn(btns, `↩️ Pull back ${p.playerName || p.label}`, () => doPullPlayer(opp, p.id), 'correct');
+  });
   if(!myStanding.length&&!oppCouch.length) addBtn(btns,'✓ Correct — no action (skip)',()=>doWrong(),false);
   addBtn(btns,'✗ Wrong answer',()=>doWrong(),'wrong');
 }
@@ -560,24 +565,25 @@ function hideAnswer(){document.getElementById('answer-card').classList.remove('s
 function doSit(team){
   const standing=G.players[team].filter(p=>!p.onCouch);
   if(!standing.length) return;
-  standing[0].onCouch=true;
+  const buzzer = standing.find(p => p.playerName === G.buzzedPlayerName) || standing[0];
+  buzzer.onCouch = true;
   G.qIdx++;G.round++;
   renderTeams();
   trigger('action',{action:'SIT',team,gameId:GAME_ID});
   checkWin(team);
 }
 
-function doPull(oppTeam){
-  const onCouch=G.players[oppTeam].filter(p=>p.onCouch);
-  if(!onCouch.length) return;
-  onCouch[0].onCouch=false;
-  G.qIdx++;G.round++;
+function doPullPlayer(oppTeam, playerId){
+  const p = G.players[oppTeam].find(p => p.id === playerId);
+  if(!p) return;
+  p.onCouch = false;
+  G.qIdx++; G.round++;
   renderTeams();
-  trigger('action',{action:'PULL',team:oppTeam,gameId:GAME_ID});
-  document.getElementById('action-box').style.display='none';
+  trigger('action', {action:'PULL', team:oppTeam, gameId:GAME_ID});
+  document.getElementById('action-box').style.display = 'none';
   hideAnswer();
-  document.getElementById('q-status').textContent=`Player pulled back from ${G.names[oppTeam]}!`;
-  setTimeout(loadQuestion,1200);
+  document.getElementById('q-status').textContent = `${p.playerName || p.label} pulled back!`;
+  setTimeout(loadQuestion, 1200);
 }
 
 function doWrong(){
