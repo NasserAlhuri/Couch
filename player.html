@@ -241,9 +241,15 @@ function connectPusher(){
     pusher=new Pusher(PUSHER_KEY,{cluster:PUSHER_CLUSTER});
     pusher.connection.bind('connected',()=>{
       channel=pusher.subscribe(`game-${GAME_ID}`);
+      channel.bind('game-state', onGameState);
+      channel.bind('buzzed', onBuzzed);
+      channel.bind('action', onAction);
+      channel.bind('win', onWin);
       channel.bind('pusher:subscription_succeeded',()=>{
         // Announce join to host
-        notifyHost('join',{team:TEAM,name:myName,gameId:GAME_ID,playerId:`${TEAM}-${myName}`});
+        setTimeout(()=>{
+          notifyHost('join', {team:TEAM, name:myName, gameId:GAME_ID, playerId:`${TEAM}-${myName}`});
+        }, 400);
         // Show game UI
         document.getElementById('loading').style.display='none';
         document.getElementById('player').style.display='flex';
