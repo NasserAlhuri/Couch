@@ -610,8 +610,10 @@ function checkWin(team){
 
 // ── QR / LINK ──
 function getPlayerURL(team){
-  const base=window.location.origin+window.location.pathname.replace('host.html','');
-  return `${base}player.html?game=${GAME_ID}&team=${team}&key=${encodeURIComponent(document.getElementById('cfg-key').value.trim())}&cluster=${encodeURIComponent(document.getElementById('cfg-cluster').value.trim())}`;
+  const base = window.location.origin;
+  const key = document.getElementById('cfg-key').value.trim();
+  const cluster = document.getElementById('cfg-cluster').value.trim();
+  return `${base}/player.html?game=${GAME_ID}&team=${team}&key=${encodeURIComponent(key)}&cluster=${encodeURIComponent(cluster)}`;
 }
 
 document.getElementById('show-qr-a').addEventListener('click',()=>showQR('a'));
