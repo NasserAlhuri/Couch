@@ -69,14 +69,6 @@ html,body{width:100%;height:100%;font-family:'Tajawal',sans-serif;background:var
 .q-txt{font-size:.95rem;font-weight:500;line-height:1.5;color:var(--text)}
 .q-placeholder{color:var(--muted);font-size:.9rem}
 
-/* TIMER BAR */
-.timer-bar-wrap{padding:.4rem 1.25rem;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--border)}
-.timer-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.timer-bar-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 1s linear,background .3s}
-.timer-bar-fill.warn{background:var(--gold)}
-.timer-bar-fill.danger{background:var(--red)}
-.timer-secs{font-size:.7rem;color:var(--muted);text-align:center;margin-top:.2rem}
-
 /* BUZZER */
 .buzzer-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;gap:1rem}
 .buzz-btn{width:min(240px,65vw);height:min(240px,65vw);border-radius:50%;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:clamp(1.8rem,7vw,2.5rem);font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .1s,box-shadow .15s;user-select:none;-webkit-user-select:none}
@@ -149,10 +141,6 @@ html,body{width:100%;height:100%;font-family:'Tajawal',sans-serif;background:var
   <div class="q-area">
     <div class="q-txt" id="q-display"><span class="q-placeholder">السؤال سيظهر هنا</span></div>
   </div>
-  <div class="timer-bar-wrap">
-    <div class="timer-bar-bg"><div class="timer-bar-fill" id="timer-fill" style="width:100%"></div></div>
-    <div class="timer-secs" id="timer-secs-txt"></div>
-  </div>
   <div class="buzzer-area">
     <button class="buzz-btn disabled" id="buzz-btn">اضغط!</button>
     <div class="buzz-hint" id="buzz-hint">انتظر السؤال...</div>
@@ -190,7 +178,6 @@ if(!GAME_ID||!TEAM||!PUSHER_KEY||!PUSHER_CLUSTER){
 let myName='', teamName=TEAM==='a'?'الفريق أ':'الفريق ب';
 let pusher=null, channel=null;
 let phase='idle', buzzLocked=false;
-let timerTotal=30, timerLeft=30;
 
 // Set team badge on name screen
 const badge=document.getElementById('ns-team-badge');
@@ -219,7 +206,6 @@ function connectPusher(){
       channel.bind('buzzed',onBuzzed);
       channel.bind('action',onAction);
       channel.bind('win',onWin);
-      channel.bind('timer',onTimer);
       channel.bind('pusher:subscription_succeeded',()=>{
         document.getElementById('loading').style.display='none';
         // Show waiting screen until game-state arrives
@@ -269,12 +255,16 @@ function onGameState(data){
     pb.className='p-name-badge t'+TEAM;
   }
 
-  // Switch from waiting to game screen when question arrives
+  // Switch from waiting to game screen only when question arrives
   if(data.currentQ){
     document.getElementById('waiting-screen').style.display='none';
     document.getElementById('player').style.display='flex';
     document.getElementById('q-display').textContent=data.currentQ;
   } else {
+    // Keep showing waiting screen, update team info there
+    if(document.getElementById('player').style.display==='none'||!document.getElementById('player').style.display){
+      document.getElementById('waiting-screen').style.display='flex';
+    }
     document.getElementById('q-display').innerHTML='<span class="q-placeholder">السؤال سيظهر هنا</span>';
   }
 
@@ -288,7 +278,10 @@ function onGameState(data){
 
   if(data.timerSecs) timerTotal=data.timerSecs;
 
-  if(data.phase==='idle'){
+  if(data.phase==='waiting'){
+    disableBuzz();
+    setStatus('في انتظار المضيف لعرض السؤال...','');
+  } else if(data.phase==='idle'){
     phase='idle'; buzzLocked=false;
     const myPlayers=data.players&&data.players[TEAM];
     const me=myPlayers&&myPlayers.find(p=>p.playerName===myName);
@@ -307,7 +300,6 @@ function onGameState(data){
 function onBuzzed(data){
   if(data.gameId!==GAME_ID) return;
   phase='buzzed'; disableBuzz();
-  resetTimerBar();
   if(data.team===TEAM&&data.name===myName){
     setStatus('ضغطت الجرس! انتظر المضيف...','buzzed-me');
   } else {
@@ -318,24 +310,6 @@ function onBuzzed(data){
 function onAction(data){
   if(data.gameId!==GAME_ID) return;
   phase='idle'; buzzLocked=false;
-  resetTimerBar();
-}
-
-function onTimer(data){
-  if(data.gameId!==GAME_ID) return;
-  const secs=data.secs;
-  timerLeft=secs;
-  const pct=Math.max(0,(secs/timerTotal)*100);
-  const fill=document.getElementById('timer-fill');
-  fill.style.width=pct+'%';
-  fill.className='timer-bar-fill'+(secs<=10?' danger':secs<=20?' warn':'');
-  document.getElementById('timer-secs-txt').textContent=secs>0?`${secs} ثانية`:'';
-}
-
-function resetTimerBar(){
-  document.getElementById('timer-fill').style.width='100%';
-  document.getElementById('timer-fill').className='timer-bar-fill';
-  document.getElementById('timer-secs-txt').textContent='';
 }
 
 function onWin(data){
