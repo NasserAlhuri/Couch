@@ -291,7 +291,10 @@ input[type=text]:focus{border-color:var(--gold)}
 <div id="winner">
   <h1 id="winner-name">فاز الفريق!</h1>
   <p>كل اللاعبين على الكنبة!</p>
-  <button class="w-btn" onclick="location.reload()">العب مجدداً</button>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem">
+    <button class="w-btn" id="rematch-btn">🔁 إعادة مع نفس الفريق</button>
+    <button class="w-btn" style="background:var(--surface);color:var(--text);border:1px solid var(--border)" onclick="location.reload()">لعبة جديدة</button>
+  </div>
 </div>
 
 <script>
@@ -470,6 +473,8 @@ function startGameUI(){
   channel=pusher.subscribe(`game-${GAME_ID}`);
   channel.bind('buzz',onBuzzEvent);
   channel.bind('join',onJoinEvent);
+  channel.bind('leave',onLeaveEvent);
+  channel.bind('switch-team',onSwitchTeamEvent);
   document.getElementById('setup').style.display='none';
   document.getElementById('game').style.display='block';
   document.getElementById('tp-name-a').textContent=G.names.a;
@@ -548,6 +553,59 @@ function onBuzzEvent(data){
   if(G.phase!=='idle') return;
   onBuzz(team,name);
 }
+
+// ── LEAVE ──
+function onLeaveEvent(data){
+  const {team,name,gameId}=data;
+  if(gameId!==GAME_ID) return;
+  const p=G.players[team]&&G.players[team].find(pl=>pl.playerName===name);
+  if(!p) return;
+  p.playerName=''; p.label=`P${G.players[team].indexOf(p)+1}`; p.onCouch=false;
+  renderTeams();
+  saveState();
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round});
+}
+
+// ── SWITCH TEAM ──
+function onSwitchTeamEvent(data){
+  const {fromTeam,toTeam,name,gameId}=data;
+  if(gameId!==GAME_ID) return;
+  const filled=G.players[toTeam]?G.players[toTeam].filter(p=>p.playerName!=='').length:0;
+  if(filled>=G.sizes[toTeam]){
+    trigger('team-full',{gameId:GAME_ID,team:toTeam,name,playerId:`${toTeam}-${name}`});
+    return;
+  }
+  // Remove from old team
+  const old=G.players[fromTeam]&&G.players[fromTeam].find(pl=>pl.playerName===name);
+  if(old){old.playerName='';old.label=`P${G.players[fromTeam].indexOf(old)+1}`;old.onCouch=false;}
+  // Add to new team
+  const slot=G.players[toTeam]&&G.players[toTeam].find(pl=>pl.playerName==='');
+  if(slot){slot.playerName=name;slot.label=name.slice(0,4);}
+  renderTeams();
+  saveState();
+  const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
+  trigger('game-state',state);
+  setTimeout(()=>trigger('game-state',state),600);
+}
+
+// ── REMATCH ──
+document.getElementById('rematch-btn').addEventListener('click',()=>{
+  // Reset couch state for all players, keep names
+  ['a','b'].forEach(t=>{
+    G.players[t].forEach(p=>{ p.onCouch=false; });
+  });
+  G.questions=shuffle([...G.questions]); // reshuffle same pool
+  G.qIdx=0; G.round=1; G.phase='idle'; G.buzzedTeam=null; G.buzzedPlayerName='';
+  undoStack=[];
+  document.getElementById('winner').classList.remove('show');
+  document.getElementById('action-box').style.display='none';
+  document.getElementById('next-q-btn').style.display='none';
+  document.getElementById('undo-btn').style.display='none';
+  saveState();
+  renderTeams();
+  loadQuestion();
+  trigger('rematch',{gameId:GAME_ID,names:G.names,players:G.players});
+});
 
 
 // ── NEXT QUESTION ──
