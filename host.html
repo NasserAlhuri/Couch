@@ -253,28 +253,24 @@ input[type=text]:focus{border-color:var(--gold)}
     </div>
   </div>
 
-  <!-- انتظار تأكيد المضيف -->
-  <div id="ready-box" style="background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:1.5rem;margin-bottom:1rem;text-align:center;display:none">
-    <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">اللاعبون جاهزون؟ اضغط لعرض السؤال</p>
-    <button id="reveal-btn" style="background:var(--gold);color:#000;border:none;border-radius:10px;padding:.75rem 2rem;font-family:'Tajawal',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer">اعرض السؤال</button>
-  </div>
+  <div class="q-box">
     <div class="q-box-inner">
       <div>
         <div class="q-label">سؤال <span id="ql-n">1</span></div>
         <div class="q-text" id="q-text">في انتظار البدء...</div>
         <div class="q-status" id="q-status">في انتظار الجرس...</div>
       </div>
-      <div class="answer-card" id="answer-card">
-          <div class="ac-eyebrow">الإجابة الصحيحة</div>
-          <div class="ac-answer" id="answer-text">—</div>
-          <div class="ac-note">للمضيف فقط</div>
-        </div>
+      <div class="answer-card show" id="answer-card">
+        <div class="ac-eyebrow">الإجابة الصحيحة</div>
+        <div class="ac-answer" id="answer-text">—</div>
+        <div class="ac-note">للمضيف فقط</div>
+      </div>
     </div>
   </div>
 
   <div class="buzz-bar">
-    <div class="buzz-ind" id="buzz-ind-a">Team A — في الانتظار</div>
-    <div class="buzz-ind" id="buzz-ind-b">Team B — في الانتظار</div>
+    <div class="buzz-ind" id="buzz-ind-a">في الانتظار</div>
+    <div class="buzz-ind" id="buzz-ind-b">في الانتظار</div>
   </div>
 
   <div class="action-box" id="action-box">
@@ -468,7 +464,6 @@ document.getElementById('start-btn').addEventListener('click',()=>{
 document.getElementById('skip-btn').addEventListener('click',()=>{
   if(G.phase==='done') return;
   G.qIdx++;
-  hideAnswer();
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
   trigger('action',{action:'SKIP',gameId:GAME_ID});
@@ -488,7 +483,7 @@ function onJoinEvent(data){
   const p=G.players[team]&&G.players[team].find(pl=>pl.playerName===''||pl.id===playerId);
   if(p){p.playerName=name;p.label=name.slice(0,4);}
   renderTeams();
-  const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase==='idle'?'waiting':G.phase,currentQ:'',qIdx:G.qIdx,round:G.round};
+  const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
   trigger('game-state',state);
   setTimeout(()=>trigger('game-state',state),600);
 }  
@@ -501,54 +496,13 @@ function onBuzzEvent(data){
 }
 
 
-// ── NEXT QUESTION & REVEAL ──
-document.getElementById('reveal-btn').addEventListener('click',()=>{
-  document.getElementById('ready-box').style.display='none';
-  document.getElementById('next-q-btn').style.display='none';
-  showCurrentQuestion();
-});
-
+// ── NEXT QUESTION ──
 document.getElementById('next-q-btn').addEventListener('click',()=>{
   G.qIdx++; G.round++;
-  hideAnswer();
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
-  prepareQuestion();
+  loadQuestion();
 });
-
-function prepareQuestion(){
-  // Show ready-box, hide question from players
-  document.getElementById('action-box').style.display='none';
-  document.getElementById('answer-card').classList.remove('show');
-  document.getElementById('buzz-ind-a').className='buzz-ind';
-  document.getElementById('buzz-ind-b').className='buzz-ind';
-  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
-  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
-  G.phase='idle'; G.buzzedTeam=null;
-  if(G.qIdx>=G.questions.length){
-    document.getElementById('q-text').textContent='لا مزيد من الأسئلة! ابدأ لعبة جديدة.';
-    document.getElementById('q-status').textContent='';
-    document.getElementById('ready-box').style.display='none';
-    trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',currentQ:'',qIdx:G.qIdx,round:G.round});
-    return;
-  }
-  // Show ready-box to host, hide question from players
-  document.getElementById('q-text').textContent='...';
-  document.getElementById('q-status').textContent='اضغط "اعرض السؤال" حين يكون الفريقان جاهزين';
-  document.getElementById('ready-box').style.display='block';
-  document.getElementById('ql-n').textContent=G.qIdx+1;
-  document.getElementById('q-n').textContent=G.qIdx+1;
-  document.getElementById('round-n').textContent=G.round;
-  // Notify players to wait
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'waiting',currentQ:'',qIdx:G.qIdx,round:G.round});
-}
-
-function showCurrentQuestion(){
-  const item=G.questions[G.qIdx];
-  document.getElementById('q-text').textContent=item.q;
-  document.getElementById('q-status').textContent='في انتظار الجرس...';
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',currentQ:item.q,qIdx:G.qIdx,round:G.round});
-}
 
 // ── RENDER ──
 function renderTeams(){
@@ -560,27 +514,40 @@ function renderTeams(){
     document.getElementById(`zone-couch-${t}`).innerHTML=couch.map(p=>`<div class="token ${cls} couch" title="${p.playerName||p.label}">${p.label}</div>`).join('');
     document.getElementById(`standing-${t}`).textContent=standing.length;
   });
-  // Broadcast state to all players
-  trigger('game-state',{
-    gameId:GAME_ID,names:G.names,
-    players:G.players,phase:G.phase,
-    currentQ:G.phase==='idle'&&G.questions[G.qIdx]?G.questions[G.qIdx].q:'',
-    qIdx:G.qIdx,round:G.round
-  });
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round});
 }
 
-function loadQuestion(){ prepareQuestion(); }
+function loadQuestion(){
+  document.getElementById('action-box').style.display='none';
+  document.getElementById('buzz-ind-a').className='buzz-ind';
+  document.getElementById('buzz-ind-b').className='buzz-ind';
+  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
+  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
+  G.phase='idle'; G.buzzedTeam=null;
+  if(G.qIdx>=G.questions.length){
+    document.getElementById('q-text').textContent='لا مزيد من الأسئلة! ابدأ لعبة جديدة.';
+    document.getElementById('q-status').textContent='';
+    document.getElementById('answer-text').textContent='—';
+    trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
+    return;
+  }
+  const item=G.questions[G.qIdx];
+  document.getElementById('q-text').textContent=item.q;
+  document.getElementById('answer-text').textContent=item.a;
+  document.getElementById('q-status').textContent='في انتظار الجرس...';
+  document.getElementById('ql-n').textContent=G.qIdx+1;
+  document.getElementById('q-n').textContent=G.qIdx+1;
+  document.getElementById('round-n').textContent=G.round;
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
+}
 
 function onBuzz(team,playerName){
   G.buzzedPlayerName=playerName;
   if(G.phase!=='idle') return;
   G.phase='buzzed';G.buzzedTeam=team;
-  const item=G.questions[G.qIdx];
-  document.getElementById('answer-text').textContent=item&&item.a?item.a:'(لا توجد إجابة)';
-  document.getElementById('answer-card').classList.add('show');
   const ind=document.getElementById(`buzz-ind-${team}`);
   ind.className='buzz-ind fired';
-  ind.textContent=`🔔 ${playerName||G.names[team]} BUZZED!`;
+  ind.textContent=`${playerName||G.names[team]} ضغط الجرس!`;
   document.getElementById('q-status').textContent=`${playerName||G.names[team]} ضغط الجرس — تحقق من الإجابة!`;
   trigger('buzzed',{team,name:playerName||G.names[team],gameId:GAME_ID});
   showActions(team);
@@ -627,14 +594,12 @@ function doPullPlayer(oppTeam,playerId){
   renderTeams();
   trigger('action',{action:'PULL',team:oppTeam,gameId:GAME_ID});
   document.getElementById('action-box').style.display='none';
-  hideAnswer();
   document.getElementById('q-status').textContent=`${p.playerName||p.label} رجع للعبة!`;
   document.getElementById('next-q-btn').style.display='inline-block';
 }
 
 function doWrong(){
   document.getElementById('action-box').style.display='none';
-  hideAnswer();
   document.getElementById('q-status').textContent='إجابة خاطئة!';
   trigger('action',{action:'WRONG',gameId:GAME_ID});
   document.getElementById('next-q-btn').style.display='inline-block';
@@ -648,7 +613,6 @@ function checkWin(team){
     document.getElementById('winner').classList.add('show');
   } else {
     document.getElementById('action-box').style.display='none';
-    hideAnswer();
     document.getElementById('next-q-btn').style.display='inline-block';
   }
 }
@@ -666,7 +630,6 @@ document.getElementById('show-qr-b').addEventListener('click',()=>showQR('b'));
 document.getElementById('modal-close').addEventListener('click',()=>document.getElementById('qr-modal').classList.remove('open'));
 
 function showQR(team){
-  if(!GAME_ID){ alert('ابدأ اللعبة أولاً'); return; }
   const url=getPlayerURL(team);
   document.getElementById('modal-title').textContent=`${G.names[team]} — انضمام`;
   document.getElementById('modal-sub').textContent=`امسح الـ QR أو شارك الرابط مع لاعبي ${G.names[team]}`;
