@@ -463,15 +463,8 @@ document.getElementById('start-btn').addEventListener('click',()=>{
   renderTeams();loadQuestion();
 });
 
-document.getElementById('skip-btn').addEventListener('click',()=>{
-  if(G.phase==='done') return;
-  stopTimer();
-  G.qIdx++;
-  hideAnswer();
-  document.getElementById('action-box').style.display='none';
-  trigger('action',{action:'SKIP',gameId:GAME_ID});
-  setTimeout(loadQuestion,300);
-});
+
+  
 
 // ── PLAYER EVENTS ──
 function onJoinEvent(data){
