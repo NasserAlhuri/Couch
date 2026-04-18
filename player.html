@@ -288,18 +288,29 @@ function onBuzzed(data){
 
 function onAction(data){
   if(data.gameId!==GAME_ID) return;
-  phase='idle'; buzzLocked=false;
-  // Re-enable buzzer on wrong/skip (state update will come via game-state)
-  if(data.action==='WRONG'||data.action==='SKIP'){
+  if(data.action==='WRONG'){
+    phase='idle'; buzzLocked=false;
+    // Will check couch status from next game-state, but re-enable optimistically
     enableBuzz();
     setStatus('جاهز! اضغط حين تعرف الجواب','ready');
+  } else if(data.action==='SKIP'){
+    phase='idle'; buzzLocked=false;
+    disableBuzz();
+    setStatus('في انتظار السؤال التالي...','');
   }
 }
 
 function onTeamFull(data){
   if(data.gameId!==GAME_ID) return;
-  if(data.team!==TEAM) return;
-  showError('الفريق ممتلئ! لا يمكن قبول لاعبين إضافيين في هذا الفريق.');
+  if(data.playerId!==`${TEAM}-${myName}`) return; // only for this specific player
+  // Show error only on name screen, not as full page error
+  document.getElementById('loading').style.display='none';
+  document.getElementById('name-screen').style.display='flex';
+  document.getElementById('ns-err').textContent='الفريق ممتلئ! جرب فريقاً آخر أو انتظر.';
+  // Reset pusher
+  if(channel) channel.unbind_all();
+  if(pusher) pusher.disconnect();
+  pusher=null; channel=null;
 }
 
 function onWin(data){
