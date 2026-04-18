@@ -17,6 +17,8 @@
 }
 html,body{width:100%;height:100%;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 
+body.light{--bg:#f5f5f0;--card:#fff;--border:#ddd;--text:#111;--muted:#666}
+.mode-toggle{position:fixed;top:.6rem;left:.6rem;z-index:999;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:.25rem .6rem;cursor:pointer;font-size:.75rem;color:var(--muted);font-family:'Tajawal',sans-serif}
 /* NAME ENTRY */
 #name-screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;background:var(--bg);z-index:50}
 .ns-logo{font-size:2.5rem;margin-bottom:.25rem}
@@ -103,6 +105,7 @@ html,body{width:100%;height:100%;font-family:'Tajawal',sans-serif;background:var
 </style>
 </head>
 <body>
+<button class="mode-toggle" id="mode-toggle">☀️</button>
 
 <div id="name-screen">
   <div class="ns-logo">🛋️</div>
@@ -158,6 +161,18 @@ html,body{width:100%;height:100%;font-family:'Tajawal',sans-serif;background:var
 </div>
 
 <script>
+// ── DARK/LIGHT MODE ──
+(()=>{
+  const btn=document.getElementById('mode-toggle');
+  const saved=localStorage.getItem('cc_mode');
+  if(saved==='light'){document.body.classList.add('light');btn.textContent='🌙';}
+  btn.addEventListener('click',()=>{
+    const isLight=document.body.classList.toggle('light');
+    btn.textContent=isLight?'🌙':'☀️';
+    localStorage.setItem('cc_mode',isLight?'light':'dark');
+  });
+})();
+
 const params=new URLSearchParams(window.location.search);
 const GAME_ID=params.get('game');
 const TEAM=params.get('team');
