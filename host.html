@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>تحدي الكنبة — المضيف</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
@@ -28,7 +28,7 @@ body.light{
 .mode-toggle:hover{border-color:var(--gold);color:var(--gold)}
 /* SETUP */
 #setup{max-width:700px;margin:0 auto;padding:2.5rem 1.5rem;display:block}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:4rem;letter-spacing:3px;color:var(--text);line-height:1}
+.logo{font-family:'Tajawal',sans-serif;font-size:4rem;font-weight:900;letter-spacing:1px;color:var(--text);line-height:1}
 .logo span{color:var(--gold)}
 .tagline{color:var(--muted);margin:.25rem 0 2.5rem;font-size:.95rem}
 .teams-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
@@ -53,30 +53,31 @@ input[type=text]:focus{border-color:var(--gold)}
 .add-qa-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem .9rem;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:.85rem;font-family:'Tajawal',sans-serif;transition:all .15s;margin-top:.35rem}
 .add-qa-btn:hover{border-color:var(--gold);color:var(--gold)}
 .default-note{font-size:.75rem;color:var(--subtle);margin-top:.6rem}
-.start-btn{width:100%;padding:1rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;cursor:pointer;transition:opacity .15s;margin-top:1rem}
+.start-btn{width:100%;padding:1rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:opacity .15s;margin-top:1rem}
 .start-btn:hover{opacity:.88}
 
 /* GAME */
 #game{display:none;min-height:100vh;padding:1rem;max-width:960px;margin:0 auto}
 .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-.game-logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--gold)}
+.game-logo{font-family:'Tajawal',sans-serif;font-size:1.8rem;font-weight:900;letter-spacing:.5px;color:var(--gold)}
 .game-meta{font-size:.8rem;color:var(--muted);text-align:right}
 .arena{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .team-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem}
 .team-panel.pa{border-top:3px solid var(--red)}
 .team-panel.pb{border-top:3px solid var(--blue)}
 .tp-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.75rem}
-.tp-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px}
+.tp-name{font-family:'Tajawal',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.5px}
 .pa .tp-name{color:var(--red-m)}
 .pb .tp-name{color:var(--blue-m)}
 .tp-count{font-size:.75rem;color:var(--muted)}
 .zone-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--subtle);margin-bottom:.35rem}
 .zone-players{display:flex;flex-wrap:wrap;gap:.35rem;min-height:36px}
 .couch-zone{background:var(--input-bg);border:1px dashed var(--border);border-radius:8px;padding:.35rem .4rem;min-height:44px;display:flex;flex-wrap:wrap;gap:.35rem;align-items:flex-start;margin-top:.5rem}
-.token{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;border:2px solid transparent;transition:all .25s;text-align:center;line-height:1.1;padding:2px}
+.token{height:28px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;border:2px solid transparent;transition:all .25s;padding:0 .65rem;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
 .token.ta{background:var(--red-l);color:var(--red-d);border-color:var(--red)}
 .token.tb{background:var(--blue-l);color:var(--blue-d);border-color:var(--blue)}
-.token.couch{opacity:.4;border-style:dashed}
+.token.couch{opacity:.35;border-style:dashed}
+.token.locked{opacity:.5;text-decoration:line-through;filter:grayscale(.5)}
 
 .q-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem}
 .q-box-inner{display:grid;grid-template-columns:1fr auto;gap:1.25rem;align-items:start}
@@ -91,7 +92,7 @@ input[type=text]:focus{border-color:var(--gold)}
 .ac-note{font-size:.68rem;color:#4a7a30}
 
 .buzz-bar{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem}
-.buzz-ind{padding:.75rem 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1px;color:var(--muted);transition:all .3s}
+.buzz-ind{padding:.75rem 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);text-align:center;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.3px;color:var(--muted);transition:all .3s}
 .buzz-ind.fired{background:var(--gold);color:#000;border-color:var(--gold);font-size:1.1rem}
 
 /* Connected players list */
@@ -101,7 +102,7 @@ input[type=text]:focus{border-color:var(--gold)}
 .pc-badge.tb{background:var(--blue-l);color:var(--blue-d)}
 
 .action-box{background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:1.25rem;margin-bottom:1rem;display:none}
-.action-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1px;color:var(--gold);margin-bottom:.2rem}
+.action-title{font-family:'Tajawal',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:.3px;color:var(--gold);margin-bottom:.2rem}
 .action-sub{font-size:.82rem;color:var(--muted);margin-bottom:1rem}
 .action-btns{display:flex;flex-wrap:wrap;gap:.6rem}
 .act-btn{padding:.55rem 1.1rem;border-radius:9px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.9rem;font-weight:500;transition:all .15s}
@@ -118,7 +119,7 @@ input[type=text]:focus{border-color:var(--gold)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;min-width:300px;max-width:380px;width:90%;text-align:center;position:relative}
-.modal h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:1px;margin-bottom:.25rem}
+.modal h2{font-family:'Tajawal',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:.3px;margin-bottom:.25rem}
 .modal p{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem}
 .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;line-height:1}
 #qr-canvas{display:flex;justify-content:center;margin-bottom:1rem}
@@ -127,9 +128,9 @@ input[type=text]:focus{border-color:var(--gold)}
 
 #winner{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem}
 #winner.show{display:flex}
-#winner h1{font-family:'Bebas Neue',sans-serif;font-size:5rem;letter-spacing:4px;color:var(--gold);animation:pop .5s ease}
+#winner h1{font-family:'Tajawal',sans-serif;font-size:4.5rem;font-weight:900;letter-spacing:1px;color:var(--gold);animation:pop .5s ease}
 #winner p{font-size:1.2rem;color:var(--muted);margin:.5rem 0 2rem}
-.w-btn{padding:.85rem 2.5rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer}
+.w-btn{padding:.85rem 2.5rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.5px;cursor:pointer}
 @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 
 /* RESUME BANNER */
@@ -146,7 +147,7 @@ input[type=text]:focus{border-color:var(--gold)}
 .skip-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
 .skip-btn:hover{border-color:var(--muted);color:var(--text)}
   .teams-grid,.arena{grid-template-columns:1fr}
-  .logo{font-size:3rem}
+  .logo{font-size:2.5rem}
   .q-box-inner{grid-template-columns:1fr}
   .answer-card{width:100%}
 }
@@ -388,7 +389,7 @@ async function trigger(event, data){
 }
 
 // ── GAME STATE ──
-let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0,round:1,phase:'idle',buzzedTeam:null,buzzedPlayerName:''};
+let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0,round:1,phase:'idle',buzzedTeam:null,buzzedPlayerName:'',lockedOut:{}};
 let undoStack=[];
 let idleTimer=null;
 const IDLE_TIMEOUT=2*60*60*1000; // 2 hours
@@ -548,9 +549,9 @@ function onJoinEvent(data){
 }  
 
 function onBuzzEvent(data){
-  
   const {team,name}=data;
   if(G.phase!=='idle') return;
+  if(G.lockedOut&&G.lockedOut[`${team}-${name}`]) return;
   onBuzz(team,name);
 }
 
@@ -594,8 +595,8 @@ document.getElementById('rematch-btn').addEventListener('click',()=>{
   ['a','b'].forEach(t=>{
     G.players[t].forEach(p=>{ p.onCouch=false; });
   });
-  G.questions=shuffle([...G.questions]); // reshuffle same pool
-  G.qIdx=0; G.round=1; G.phase='idle'; G.buzzedTeam=null; G.buzzedPlayerName='';
+  G.questions=shuffle([...G.questions]);
+  G.qIdx=0; G.round=1; G.phase='idle'; G.buzzedTeam=null; G.buzzedPlayerName=''; G.lockedOut={};
   undoStack=[];
   document.getElementById('winner').classList.remove('show');
   document.getElementById('action-box').style.display='none';
@@ -624,11 +625,18 @@ function renderTeams(){
     const cls=t==='a'?'ta':'tb';
     const standing=G.players[t].filter(p=>!p.onCouch);
     const couch=G.players[t].filter(p=>p.onCouch);
-    document.getElementById(`zone-stand-${t}`).innerHTML=standing.map(p=>`<div class="token ${cls}" title="${p.playerName||p.label}">${p.label}</div>`).join('');
-    document.getElementById(`zone-couch-${t}`).innerHTML=couch.map(p=>`<div class="token ${cls} couch" title="${p.playerName||p.label}">${p.label}</div>`).join('');
+    const locked=G.lockedOut||{};
+    document.getElementById(`zone-stand-${t}`).innerHTML=standing.map(p=>{
+      const isLocked=!!locked[`${t}-${p.playerName}`];
+      const display=(p.playerName||p.label)+(isLocked?' 🔒':'');
+      return `<div class="token ${cls}${isLocked?' locked':''}" title="${p.playerName||p.label}">${display}</div>`;
+    }).join('');
+    document.getElementById(`zone-couch-${t}`).innerHTML=couch.map(p=>
+      `<div class="token ${cls} couch" title="${p.playerName||p.label}">${p.playerName||p.label}</div>`
+    ).join('');
     document.getElementById(`standing-${t}`).textContent=standing.length;
   });
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round});
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round,lockedOut:G.lockedOut||{}});
 }
 
 function loadQuestion(){
@@ -637,12 +645,12 @@ function loadQuestion(){
   document.getElementById('buzz-ind-b').className='buzz-ind';
   document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
   document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
-  G.phase='idle'; G.buzzedTeam=null;
+  G.phase='idle'; G.buzzedTeam=null; G.lockedOut={};
   if(G.qIdx>=G.questions.length){
     document.getElementById('q-text').textContent='لا مزيد من الأسئلة! ابدأ لعبة جديدة.';
     document.getElementById('q-status').textContent='';
     document.getElementById('answer-text').textContent='—';
-    trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
+    trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round,lockedOut:{}});
     return;
   }
   const item=G.questions[G.qIdx];
@@ -718,16 +726,21 @@ function doPullPlayer(oppTeam,playerId){
 }
 
 function doWrong(){
+  // Lock out the player who buzzed wrong for this question
+  if(G.buzzedTeam&&G.buzzedPlayerName){
+    if(!G.lockedOut) G.lockedOut={};
+    G.lockedOut[`${G.buzzedTeam}-${G.buzzedPlayerName}`]=true;
+  }
   G.phase='idle'; G.buzzedTeam=null;
   document.getElementById('action-box').style.display='none';
   document.getElementById('buzz-ind-a').className='buzz-ind';
   document.getElementById('buzz-ind-b').className='buzz-ind';
   document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
   document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
-  document.getElementById('q-status').textContent='إجابة خاطئة! حاول مجدداً...';
+  document.getElementById('q-status').textContent='إجابة خاطئة — البقية يمكنهم الضغط!';
   resetIdleTimer();
-  trigger('action',{action:'WRONG',gameId:GAME_ID});
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
+  renderTeams(); // shows 🔒 on the locked player
+  trigger('action',{action:'WRONG',gameId:GAME_ID,lockedOut:G.lockedOut});
 }
 
 function checkWin(team){
