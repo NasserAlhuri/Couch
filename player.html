@@ -295,8 +295,8 @@ function onAction(data){
     setStatus('جاهز! اضغط حين تعرف الجواب','ready');
   } else if(data.action==='SKIP'){
     phase='idle'; buzzLocked=false;
-    disableBuzz();
-    setStatus('في انتظار السؤال التالي...','');
+    enableBuzz();
+    setStatus('جاهز! اضغط حين تعرف الجواب','ready');
   }
 }
 
