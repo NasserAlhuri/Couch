@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Couch Challenge — Host</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<title>تحدي الكنبة — المضيف</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
@@ -16,7 +16,7 @@
   --bg:#0f0f0f;--surface:#1a1a1a;--card:#222;--border:#333;
   --text:#f0f0f0;--muted:#888;--subtle:#555;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* PUSHER CONFIG SCREEN */
 #config{max-width:520px;margin:0 auto;padding:3rem 1.5rem;text-align:center}
@@ -154,39 +154,39 @@ input[type=text]:focus{border-color:var(--gold)}
 <!-- ══ PUSHER CONFIG ══ -->
 <div id="config">
   <div class="logo">Couch<span>Challenge</span></div>
-  <p>Enter your Pusher credentials to enable real-time multiplayer across devices.<br/>
-  <a class="cfg-link" href="https://pusher.com" target="_blank">Get free credentials at pusher.com →</a></p>
+  <p>أدخل بيانات Pusher لتفعيل اللعب الجماعي عبر الأجهزة.<br/>
+  <a class="cfg-link" href="https://pusher.com" target="_blank">احصل على بيانات مجانية من pusher.com ←</a></p>
   <div class="cfg-card">
-    <h3>Pusher Credentials</h3>
+    <h3>بيانات Pusher</h3>
     <div class="cfg-field">
       <label>App Key</label>
-      <input type="text" id="cfg-key" placeholder="e.g. abc123def456"/>
+      <input type="text" id="cfg-key" placeholder="مثال: abc123def456"/>
     </div>
     <div class="cfg-field">
       <label>Cluster</label>
-      <input type="text" id="cfg-cluster" placeholder="e.g. eu  or  us2  or  ap2"/>
+      <input type="text" id="cfg-cluster" placeholder="مثال: eu أو us2 أو ap2"/>
     </div>
     <div class="cfg-field">
-      <label>Channels HTTP API Endpoint (for triggering events)</label>
-      <input type="text" id="cfg-endpoint" placeholder="https://your-worker.workers.dev  or  /api/pusher"/>
+      <label>رابط API (للإرسال)</label>
+      <input type="text" id="cfg-endpoint" placeholder="https://your-site.vercel.app/api/pusher"/>
     </div>
-    <p style="font-size:.75rem;color:var(--subtle);margin-top:.5rem;line-height:1.5">The endpoint is a small server-side proxy that signs and forwards events to Pusher. See README for setup options.</p>
-    <div class="cfg-err" id="cfg-err">Could not connect to Pusher. Check your credentials.</div>
+    <p style="font-size:.75rem;color:var(--subtle);margin-top:.5rem;line-height:1.5">هذا الرابط يوقّع الأحداث ويرسلها إلى Pusher. راجع README للإعداد.</p>
+    <div class="cfg-err" id="cfg-err">تعذّر الاتصال بـ Pusher. تحقق من بياناتك.</div>
   </div>
-  <button class="cfg-btn" id="cfg-btn">Connect & Continue</button>
+  <button class="cfg-btn" id="cfg-btn">اتصل وتابع</button>
 </div>
 
 <!-- ══ SETUP ══ -->
 <div id="setup">
   <div class="logo">Couch<span>Challenge</span></div>
-  <p class="tagline">Host Screen — only you see this</p>
+  <p class="tagline">شاشة المضيف — تظهر لك فقط</p>
 
   <div class="teams-grid">
     <div class="team-card ta">
-      <div class="sec-label" style="color:var(--red-m)">Team A</div>
-      <label class="fl">Team name</label>
-      <input type="text" id="name-a" value="Red Rockets" maxlength="16"/>
-      <label class="fl">Players</label>
+      <div class="sec-label" style="color:var(--red-m)">الفريق أ</div>
+      <label class="fl">اسم الفريق</label>
+      <input type="text" id="name-a" value="الصواريخ الحمراء" maxlength="20"/>
+      <label class="fl">اللاعبون</label>
       <div class="sz-row">
         <div class="sz" data-t="a" data-n="2">2</div>
         <div class="sz on" data-t="a" data-n="3">3</div>
@@ -196,10 +196,10 @@ input[type=text]:focus{border-color:var(--gold)}
       </div>
     </div>
     <div class="team-card tb">
-      <div class="sec-label" style="color:var(--blue-m)">Team B</div>
-      <label class="fl">Team name</label>
-      <input type="text" id="name-b" value="Blue Bolts" maxlength="16"/>
-      <label class="fl">Players</label>
+      <div class="sec-label" style="color:var(--blue-m)">الفريق ب</div>
+      <label class="fl">اسم الفريق</label>
+      <input type="text" id="name-b" value="البروق الزرقاء" maxlength="20"/>
+      <label class="fl">اللاعبون</label>
       <div class="sz-row">
         <div class="sz" data-t="b" data-n="2">2</div>
         <div class="sz on" data-t="b" data-n="3">3</div>
@@ -211,14 +211,14 @@ input[type=text]:focus{border-color:var(--gold)}
   </div>
 
   <div class="card">
-    <div class="sec-label">Questions & Answers</div>
-    <p class="qa-hint">The <strong style="color:var(--green-m)">answer is shown only to you</strong> after someone buzzes. Leave blank to use 20 built-in Q&As.</p>
+    <div class="sec-label">الأسئلة والأجوبة</div>
+    <p class="qa-hint">الإجابة تظهر <strong style="color:var(--green-m)">للمضيف فقط</strong> بعد الضغط على الجرس. اتركه فارغاً لاستخدام 20 سؤالاً جاهزاً.</p>
     <div id="qa-list"></div>
-    <button class="add-qa-btn" id="add-qa-btn">+ Add question</button>
-    <p class="default-note" id="default-note">✓ No custom questions — built-in trivia will be used</p>
+    <button class="add-qa-btn" id="add-qa-btn">+ أضف سؤالاً</button>
+    <p class="default-note" id="default-note">✓ لا توجد أسئلة مخصصة — سيتم استخدام الأسئلة الجاهزة</p>
   </div>
 
-  <button class="start-btn" id="start-btn">Start Game & Share Player Links</button>
+  <button class="start-btn" id="start-btn">ابدأ اللعبة وشارك الروابط</button>
 </div>
 
 <!-- ══ GAME ══ -->
@@ -231,22 +231,22 @@ input[type=text]:focus{border-color:var(--gold)}
   <div class="arena">
     <div class="team-panel pa" id="panel-a">
       <div class="tp-header">
-        <div class="tp-name" id="tp-name-a">Team A</div>
-        <div class="tp-count"><span id="standing-a">3</span> standing</div>
+        <div class="tp-name" id="tp-name-a">الفريق أ</div>
+        <div class="tp-count"><span id="standing-a">3</span> واقف</div>
       </div>
-      <div class="zone-label">Standing</div>
+      <div class="zone-label">واقف</div>
       <div class="zone-players" id="zone-stand-a"></div>
-      <div class="zone-label" style="margin-top:.6rem">Couch 🛋️</div>
+      <div class="zone-label" style="margin-top:.6rem">الكنبة</div>
       <div class="couch-zone" id="zone-couch-a"></div>
     </div>
     <div class="team-panel pb" id="panel-b">
       <div class="tp-header">
-        <div class="tp-name" id="tp-name-b">Team B</div>
-        <div class="tp-count"><span id="standing-b">3</span> standing</div>
+        <div class="tp-name" id="tp-name-b">الفريق ب</div>
+        <div class="tp-count"><span id="standing-b">3</span> واقف</div>
       </div>
-      <div class="zone-label">Standing</div>
+      <div class="zone-label">واقف</div>
       <div class="zone-players" id="zone-stand-b"></div>
-      <div class="zone-label" style="margin-top:.6rem">Couch 🛋️</div>
+      <div class="zone-label" style="margin-top:.6rem">الكنبة</div>
       <div class="couch-zone" id="zone-couch-b"></div>
     </div>
   </div>
@@ -255,35 +255,35 @@ input[type=text]:focus{border-color:var(--gold)}
     <div class="q-box-inner">
       <div>
         <div class="q-label">Question <span id="ql-n">1</span></div>
-        <div class="q-text" id="q-text">Waiting to start...</div>
-        <div class="q-status" id="q-status">Waiting for a buzz...</div>
+        <div class="q-text" id="q-text">في انتظار البدء...</div>
+        <div class="q-status" id="q-status">في انتظار الجرس...</div>
       </div>
       <div class="answer-card" id="answer-card">
-        <div class="ac-eyebrow">✓ Correct Answer</div>
+        <div class="ac-eyebrow">الإجابة الصحيحة</div>
         <div class="ac-answer" id="answer-text">—</div>
-        <div class="ac-note">👁 Host only</div>
+        <div class="ac-note">للمضيف فقط</div>
       </div>
     </div>
   </div>
 
   <div class="buzz-bar">
-    <div class="buzz-ind" id="buzz-ind-a">Team A — waiting</div>
-    <div class="buzz-ind" id="buzz-ind-b">Team B — waiting</div>
+    <div class="buzz-ind" id="buzz-ind-a">Team A — في الانتظار</div>
+    <div class="buzz-ind" id="buzz-ind-b">Team B — في الانتظار</div>
   </div>
 
   <div class="action-box" id="action-box">
-    <div class="action-title" id="action-title">Judge the Answer</div>
-    <div class="action-sub">Check the green answer card, then choose:</div>
+    <div class="action-title" id="action-title">حكّم الإجابة</div>
+    <div class="action-sub">تحقق من بطاقة الإجابة الخضراء ثم اختر:</div>
     <div class="action-btns" id="action-btns"></div>
   </div>
 
   <div class="footer-bar">
     <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-      <button class="ctrl" id="show-qr-a">📱 Team A link</button>
-      <button class="ctrl" id="show-qr-b">📱 Team B link</button>
+      <button class="ctrl" id="show-qr-a">رابط الفريق أ</button>
+      <button class="ctrl" id="show-qr-b">رابط الفريق ب</button>
     </div>
     <div style="display:flex;gap:.5rem">
-      <button class="ctrl" id="new-game-btn">New Game</button>
+      <button class="ctrl" id="new-game-btn">لعبة جديدة</button>
     </div>
   </div>
 </div>
@@ -292,42 +292,43 @@ input[type=text]:focus{border-color:var(--gold)}
 <div class="modal-bg" id="qr-modal">
   <div class="modal">
     <button class="modal-close" id="modal-close">✕</button>
-    <h2 id="modal-title">Join Link</h2>
-    <p id="modal-sub">Scan or share with players</p>
+    <h2 id="modal-title">رابط الانضمام</h2>
+    <p id="modal-sub">امسح أو شارك مع اللاعبين</p>
     <div id="qr-canvas"></div>
-    <a class="copy-link" id="copy-link" href="#">Click to copy link</a>
+    <a class="copy-link" id="copy-link" href="#">انقر للنسخ</a>
   </div>
 </div>
 
 <div id="winner">
-  <h1 id="winner-name">Team Wins!</h1>
-  <p>All players are on the couch! 🎉</p>
-  <button class="w-btn" onclick="location.reload()">Play Again</button>
+  <h1 id="winner-name">فاز الفريق!</h1>
+  <p>كل اللاعبين على الكنبة!</p>
+  <button class="w-btn" onclick="location.reload()">العب مجدداً</button>
 </div>
 
 <script>
 const DEFAULT_QA=[
-  {q:"What is the capital of France?",a:"Paris"},
-  {q:"How many sides does a hexagon have?",a:"6"},
-  {q:"What planet is known as the Red Planet?",a:"Mars"},
-  {q:"Who painted the Mona Lisa?",a:"Leonardo da Vinci"},
-  {q:"What is the fastest land animal?",a:"Cheetah"},
-  {q:"In which year did World War II end?",a:"1945"},
-  {q:"What is the chemical symbol for gold?",a:"Au"},
-  {q:"How many continents are there on Earth?",a:"7"},
-  {q:"What is the largest ocean?",a:"Pacific Ocean"},
-  {q:"Who wrote Romeo and Juliet?",a:"William Shakespeare"},
-  {q:"What is 7 multiplied by 8?",a:"56"},
-  {q:"Which country has the largest population?",a:"China (or India)"},
-  {q:"What is the tallest mountain in the world?",a:"Mount Everest"},
-  {q:"How many bones are in the adult human body?",a:"206"},
-  {q:"What language has the most native speakers?",a:"Mandarin Chinese"},
-  {q:"What is the boiling point of water in Celsius?",a:"100°C"},
-  {q:"How many players on a basketball team?",a:"5"},
-  {q:"What is the square root of 144?",a:"12"},
-  {q:"Which gas do plants absorb from the air?",a:"Carbon dioxide (CO₂)"},
-  {q:"What is the longest river in the world?",a:"The Nile"},
+  {q:"ما هي عاصمة فرنسا؟",a:"باريس"},
+  {q:"كم عدد أضلاع المسدس؟",a:"6"},
+  {q:"ما الكوكب المعروف بالكوكب الأحمر؟",a:"المريخ"},
+  {q:"من رسم لوحة الموناليزا؟",a:"ليوناردو دا فينشي"},
+  {q:"ما أسرع حيوان بري؟",a:"الفهد"},
+  {q:"في أي عام انتهت الحرب العالمية الثانية؟",a:"1945"},
+  {q:"ما الرمز الكيميائي للذهب؟",a:"Au"},
+  {q:"كم عدد قارات الأرض؟",a:"7"},
+  {q:"ما أكبر محيط في العالم؟",a:"المحيط الهادئ"},
+  {q:"من كتب روميو وجولييت؟",a:"وليام شكسبير"},
+  {q:"كم يساوي 7 في 8؟",a:"56"},
+  {q:"أي دولة تمتلك أكبر تعداد سكاني؟",a:"الصين (أو الهند)"},
+  {q:"ما أطول جبل في العالم؟",a:"جبل إيفرست"},
+  {q:"كم عدد عظام جسم الإنسان البالغ؟",a:"206"},
+  {q:"ما اللغة الأكثر انتشاراً كلغة أم؟",a:"الماندرين الصيني"},
+  {q:"ما درجة غليان الماء بالسيليزيوس؟",a:"100 درجة"},
+  {q:"كم عدد لاعبي كرة السلة في الفريق؟",a:"5"},
+  {q:"ما الجذر التربيعي للعدد 144؟",a:"12"},
+  {q:"ما الغاز الذي تمتصه النباتات من الهواء؟",a:"ثاني أكسيد الكربون"},
+  {q:"ما أطول نهر في العالم؟",a:"نهر النيل"},
 ];
+
 
 // ── SIZE BUTTONS ──
 document.querySelectorAll('.sz').forEach(b=>{
@@ -347,7 +348,7 @@ function renderQA(){
   qaEntries.forEach((e,i)=>{
     const row=document.createElement('div');
     row.className='qa-row';
-    row.innerHTML=`<input class="qa-inp" type="text" placeholder="Question ${i+1}" value="${esc(e.q)}" data-i="${i}" data-f="q"/><span class="qa-sep">→</span><input class="qa-inp" type="text" placeholder="Answer" value="${esc(e.a)}" data-i="${i}" data-f="a"/><button class="qa-del" data-i="${i}">✕</button>`;
+    row.innerHTML=`<input class="qa-inp" type="text" placeholder="سؤال ${i+1}" value="${esc(e.q)}" data-i="${i}" data-f="q"/><span class="qa-sep">←</span><input class="qa-inp" type="text" placeholder="الجواب" value="${esc(e.a)}" data-i="${i}" data-f="a"/><button class="qa-del" data-i="${i}">✕</button>`;
     list.appendChild(row);
   });
   list.querySelectorAll('.qa-inp').forEach(inp=>{
@@ -377,7 +378,7 @@ document.getElementById('cfg-btn').addEventListener('click',async()=>{
   ENDPOINT=document.getElementById('cfg-endpoint').value.trim();
   const err=document.getElementById('cfg-err');
   err.style.display='none';
-  if(!key||!cluster||!ENDPOINT){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  if(!key||!cluster||!ENDPOINT){err.textContent='يرجى ملء جميع الحقول.';err.style.display='block';return;}
   try{
     pusher=new Pusher(key,{cluster});
     // Test connection
@@ -426,7 +427,7 @@ function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.fl
 
 document.getElementById('start-btn').addEventListener('click',()=>{
   const saved=sessionStorage.getItem('cc_pusher');
-  if(!saved){alert('Pusher not configured.');return;}
+  if(!saved){alert('لم يتم إعداد Pusher.');return;}
   const {key,cluster,endpoint}=JSON.parse(saved);
   ENDPOINT=endpoint;
 
@@ -449,8 +450,8 @@ document.getElementById('start-btn').addEventListener('click',()=>{
   document.getElementById('game').style.display='block';
   document.getElementById('tp-name-a').textContent=G.names.a;
   document.getElementById('tp-name-b').textContent=G.names.b;
-  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — waiting`;
-  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — waiting`;
+  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
+  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
   renderTeams();loadQuestion();
 });
 
@@ -506,18 +507,18 @@ function loadQuestion(){
   document.getElementById('answer-card').classList.remove('show');
   document.getElementById('buzz-ind-a').className='buzz-ind';
   document.getElementById('buzz-ind-b').className='buzz-ind';
-  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — waiting`;
-  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — waiting`;
+  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
+  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
   G.phase='idle';G.buzzedTeam=null;
   if(G.qIdx>=G.questions.length){
-    document.getElementById('q-text').textContent='No more questions! Start a new game.';
+    document.getElementById('q-text').textContent='لا مزيد من الأسئلة! ابدأ لعبة جديدة.';
     document.getElementById('q-status').textContent='';
     trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',currentQ:'',qIdx:G.qIdx,round:G.round});
     return;
   }
   const item=G.questions[G.qIdx];
   document.getElementById('q-text').textContent=item.q;
-  document.getElementById('q-status').textContent='Waiting for buzz...';
+  document.getElementById('q-status').textContent='في انتظار الجرس...';
   document.getElementById('ql-n').textContent=G.qIdx+1;
   document.getElementById('q-n').textContent=G.qIdx+1;
   document.getElementById('round-n').textContent=G.round;
@@ -529,12 +530,12 @@ function onBuzz(team,playerName){
   if(G.phase!=='idle') return;
   G.phase='buzzed';G.buzzedTeam=team;
   const item=G.questions[G.qIdx];
-  document.getElementById('answer-text').textContent=item&&item.a?item.a:'(no answer set)';
+  document.getElementById('answer-text').textContent=item&&item.a?item.a:'(لا توجد إجابة)';
   document.getElementById('answer-card').classList.add('show');
   const ind=document.getElementById(`buzz-ind-${team}`);
   ind.className='buzz-ind fired';
   ind.textContent=`🔔 ${playerName||G.names[team]} BUZZED!`;
-  document.getElementById('q-status').textContent=`${playerName||G.names[team]} buzzed in — check the answer!`;
+  document.getElementById('q-status').textContent=`${playerName||G.names[team]} ضغط الجرس — تحقق من الإجابة!`;
   trigger('buzzed',{team,name:playerName||G.names[team],gameId:GAME_ID});
   showActions(team);
 }
@@ -544,15 +545,15 @@ function showActions(team){
   const myStanding=G.players[team].filter(p=>!p.onCouch);
   const oppCouch=G.players[opp].filter(p=>p.onCouch);
   document.getElementById('action-box').style.display='block';
-  document.getElementById('action-title').textContent=`${G.names[team]} buzzed in`;
+  document.getElementById('action-title').textContent=`${G.names[team]} ضغط الجرس`;
   const btns=document.getElementById('action-btns');
   btns.innerHTML='';
-  if(myStanding.length>0) addBtn(btns,`✓ Correct — ${G.names[team]} player sits`,()=>doSit(team),'correct');
+  if(myStanding.length>0) addBtn(btns,`صح — لاعب ${G.names[team]} يجلس`,()=>doSit(team),'correct');
   oppCouch.forEach(p => {
-  addBtn(btns, `↩️ Pull back ${p.playerName || p.label}`, () => doPullPlayer(opp, p.id), 'correct');
+    addBtn(btns, `ارجع ${p.playerName || p.label}`, () => doPullPlayer(opp, p.id), 'correct');
   });
-  if(!myStanding.length&&!oppCouch.length) addBtn(btns,'✓ Correct — no action (skip)',()=>doWrong(),false);
-  addBtn(btns,'✗ Wrong answer',()=>doWrong(),'wrong');
+  if(!myStanding.length&&!oppCouch.length) addBtn(btns,'صح — لا يوجد إجراء (تخطّ)',()=>doWrong(),false);
+  addBtn(btns,'خطأ — إجابة خاطئة',()=>doWrong(),'wrong');
 }
 
 function addBtn(c,l,fn,cls){
@@ -582,7 +583,7 @@ function doPullPlayer(oppTeam, playerId){
   trigger('action', {action:'PULL', team:oppTeam, gameId:GAME_ID});
   document.getElementById('action-box').style.display = 'none';
   hideAnswer();
-  document.getElementById('q-status').textContent = `${p.playerName || p.label} pulled back!`;
+  document.getElementById('q-status').textContent = `${p.playerName || p.label} رجع للعبة!`;
   setTimeout(loadQuestion, 1200);
 }
 
@@ -590,7 +591,7 @@ function doWrong(){
   G.qIdx++;
   document.getElementById('action-box').style.display='none';
   hideAnswer();
-  document.getElementById('q-status').textContent='Wrong! Next question...';
+  document.getElementById('q-status').textContent='خطأ! السؤال التالي...';
   trigger('action',{action:'WRONG',gameId:GAME_ID});
   setTimeout(loadQuestion,900);
 }
@@ -599,7 +600,7 @@ function checkWin(team){
   if(G.players[team].every(p=>p.onCouch)){
     G.phase='done';
     trigger('win',{team,name:G.names[team],gameId:GAME_ID});
-    document.getElementById('winner-name').textContent=`${G.names[team]} Wins!`;
+    document.getElementById('winner-name').textContent=`${G.names[team]} فاز!`;
     document.getElementById('winner').classList.add('show');
   } else {
     document.getElementById('action-box').style.display='none';
@@ -622,14 +623,14 @@ document.getElementById('modal-close').addEventListener('click',()=>document.get
 
 function showQR(team){
   const url=getPlayerURL(team);
-  document.getElementById('modal-title').textContent=`${G.names[team]} — Join`;
-  document.getElementById('modal-sub').textContent=`Scan QR or share link with ${G.names[team]} players`;
+  document.getElementById('modal-title').textContent=`${G.names[team]} — انضمام`;
+  document.getElementById('modal-sub').textContent=`امسح الـ QR أو شارك الرابط مع لاعبي ${G.names[team]}`;
   const canvas=document.getElementById('qr-canvas');
   canvas.innerHTML='';
   new QRCode(canvas,{text:url,width:180,height:180,colorDark:'#000',colorLight:'#fff'});
   const cl=document.getElementById('copy-link');
   cl.textContent=url;cl.href=url;
-  cl.onclick=e=>{e.preventDefault();navigator.clipboard.writeText(url).then(()=>{cl.textContent='Copied!';setTimeout(()=>cl.textContent=url,1500);});};
+  cl.onclick=e=>{e.preventDefault();navigator.clipboard.writeText(url).then(()=>{cl.textContent='تم النسخ!';setTimeout(()=>cl.textContent=url,1500);});};
   document.getElementById('qr-modal').classList.add('open');
 }
 
