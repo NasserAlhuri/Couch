@@ -206,6 +206,7 @@ function connectPusher(){
       channel.bind('buzzed',onBuzzed);
       channel.bind('action',onAction);
       channel.bind('win',onWin);
+      channel.bind('team-full',onTeamFull);
       channel.bind('pusher:subscription_succeeded',()=>{
         document.getElementById('loading').style.display='none';
         // Show waiting screen until game-state arrives
@@ -310,6 +311,17 @@ function onBuzzed(data){
 function onAction(data){
   if(data.gameId!==GAME_ID) return;
   phase='idle'; buzzLocked=false;
+  // Re-enable buzzer on wrong/skip (state update will come via game-state)
+  if(data.action==='WRONG'||data.action==='SKIP'){
+    enableBuzz();
+    setStatus('جاهز! اضغط حين تعرف الجواب','ready');
+  }
+}
+
+function onTeamFull(data){
+  if(data.gameId!==GAME_ID) return;
+  if(data.team!==TEAM) return;
+  showError('الفريق ممتلئ! لا يمكن قبول لاعبين إضافيين في هذا الفريق.');
 }
 
 function onWin(data){
