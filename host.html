@@ -18,23 +18,6 @@
 }
 body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* PUSHER CONFIG SCREEN */
-#config{max-width:520px;margin:0 auto;padding:3rem 1.5rem;text-align:center}
-#config .logo{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:3px;line-height:1}
-#config .logo span{color:var(--gold)}
-#config p{color:var(--muted);margin:.5rem 0 2rem;font-size:.9rem;line-height:1.6}
-.cfg-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-align:left;margin-bottom:1rem}
-.cfg-card h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:1rem}
-.cfg-field{margin-bottom:.75rem}
-.cfg-field label{font-size:.75rem;color:var(--muted);display:block;margin-bottom:.3rem}
-.cfg-field input{width:100%;background:#111;border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;font-size:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border .15s}
-.cfg-field input:focus{border-color:var(--gold)}
-.cfg-link{font-size:.78rem;color:var(--gold);text-decoration:none;display:inline-block;margin-bottom:1.25rem}
-.cfg-link:hover{text-decoration:underline}
-.cfg-btn{width:100%;padding:.85rem;background:var(--gold);color:#000;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer;transition:opacity .15s}
-.cfg-btn:hover{opacity:.88}
-.cfg-err{font-size:.8rem;color:var(--red);margin-top:.5rem;display:none}
-
 /* SETUP */
 #setup{max-width:700px;margin:0 auto;padding:2.5rem 1.5rem;display:none}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:4rem;letter-spacing:3px;color:var(--text);line-height:1}
@@ -152,31 +135,6 @@ input[type=text]:focus{border-color:var(--gold)}
 </style>
 </head>
 <body>
-
-<!-- ══ PUSHER CONFIG ══ -->
-<div id="config">
-  <div class="logo">تحدي<span>الكنبة</span></div>
-  <p>أدخل بيانات Pusher لتفعيل اللعب الجماعي عبر الأجهزة.<br/>
-  <a class="cfg-link" href="https://pusher.com" target="_blank">احصل على بيانات مجانية من pusher.com ←</a></p>
-  <div class="cfg-card">
-    <h3>بيانات Pusher</h3>
-    <div class="cfg-field">
-      <label>App Key</label>
-      <input type="text" id="cfg-key" placeholder="مثال: abc123def456"/>
-    </div>
-    <div class="cfg-field">
-      <label>Cluster</label>
-      <input type="text" id="cfg-cluster" placeholder="مثال: eu أو us2 أو ap2"/>
-    </div>
-    <div class="cfg-field">
-      <label>رابط API (للإرسال)</label>
-      <input type="text" id="cfg-endpoint" placeholder="https://your-site.vercel.app/api/pusher"/>
-    </div>
-    <p style="font-size:.75rem;color:var(--subtle);margin-top:.5rem;line-height:1.5">هذا الرابط يوقّع الأحداث ويرسلها إلى Pusher. راجع README للإعداد.</p>
-    <div class="cfg-err" id="cfg-err">تعذّر الاتصال بـ Pusher. تحقق من بياناتك.</div>
-  </div>
-  <button class="cfg-btn" id="cfg-btn">اتصل وتابع</button>
-</div>
 
 <!-- ══ SETUP ══ -->
 <div id="setup">
@@ -370,53 +328,14 @@ renderQA();
 // ── PUSHER SETUP ──
 let pusher=null, channel=null, ENDPOINT='', GAME_ID='';
 
-document.getElementById('cfg-btn').addEventListener('click',async()=>{
-  const key=document.getElementById('cfg-key').value.trim();
-  const cluster=document.getElementById('cfg-cluster').value.trim();
-  ENDPOINT=document.getElementById('cfg-endpoint').value.trim();
-  const err=document.getElementById('cfg-err');
-  err.style.display='none';
-  if(!key||!cluster||!ENDPOINT){err.textContent='يرجى ملء جميع الحقول.';err.style.display='block';return;}
-  try{
-    pusher=new Pusher(key,{cluster});
-    // Test connection
-    await new Promise((res,rej)=>{
-      pusher.connection.bind('connected',res);
-      pusher.connection.bind('failed',rej);
-      setTimeout(rej,8000);
-    });
-    // Save to session
-    localStorage.setItem('cc_pusher',JSON.stringify({key,cluster,endpoint:ENDPOINT}));
-    document.getElementById('config').style.display='none';
-    document.getElementById('setup').style.display='block';
-  }catch(e){
-    err.textContent='Could not connect to Pusher. Check your App Key and Cluster.';
-    err.style.display='block';
-  }
-});
+// ── PUSHER CONFIG (hardcoded) ──
+const PUSHER_KEY = 'c053770b740bc3727dc7';
+const PUSHER_CLUSTER = 'ap2';
+ENDPOINT = 'https://couch-flame.vercel.app/api/pusher';
+pusher = new Pusher(PUSHER_KEY, {cluster: PUSHER_CLUSTER});
 
-// Auto-restore credentials and skip config screen if already saved
-(()=>{
-  const saved=localStorage.getItem('cc_pusher');
-  if(saved){
-    try{
-      const {key,cluster,endpoint}=JSON.parse(saved);
-      document.getElementById('cfg-key').value=key;
-      document.getElementById('cfg-cluster').value=cluster;
-      document.getElementById('cfg-endpoint').value=endpoint;
-      // Skip config screen entirely
-      ENDPOINT=endpoint;
-      document.getElementById('config').style.display='none';
-      document.getElementById('setup').style.display='block';
-      // Init pusher silently
-      pusher=new Pusher(key,{cluster});
-    }catch(e){}
-  }
-})();
-
-// ── TRIGGER EVENT via proxy endpoint ──
+// ── TRIGGER EVENT ──
 async function trigger(event, data){
-  if(!ENDPOINT) return;
   try{
     await fetch(ENDPOINT,{
       method:'POST',
@@ -432,11 +351,6 @@ let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
 
 document.getElementById('start-btn').addEventListener('click',()=>{
-  const saved=localStorage.getItem('cc_pusher');
-  if(!saved){alert('لم يتم إعداد Pusher.');return;}
-  const {key,cluster,endpoint}=JSON.parse(saved);
-  ENDPOINT=endpoint;
-
   G.names.a=document.getElementById('name-a').value.trim()||'الفريق أ';
   G.names.b=document.getElementById('name-b').value.trim()||'الفريق ب';
   G.sizes.a=getSz('a');G.sizes.b=getSz('b');
@@ -446,7 +360,6 @@ document.getElementById('start-btn').addEventListener('click',()=>{
   G.questions=shuffle(custom.length>=3?[...custom]:[...QUESTION_BANK,...custom]);
   G.qIdx=0;G.round=1;G.phase='idle';
 
-  if(!pusher){pusher=new Pusher(key,{cluster});}
   channel=pusher.subscribe(`game-${GAME_ID}`);
   channel.bind('buzz',onBuzzEvent);
   channel.bind('join',onJoinEvent);
@@ -541,7 +454,6 @@ function loadQuestion(){
   document.getElementById('round-n').textContent=G.round;
   trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
 }
-
 function onBuzz(team,playerName){
   G.buzzedPlayerName=playerName;
   if(G.phase!=='idle') return;
@@ -624,10 +536,8 @@ function checkWin(team){
 
 // ── QR / LINK ──
 function getPlayerURL(team){
-  const base = window.location.origin;
-  const key = document.getElementById('cfg-key').value.trim();
-  const cluster = document.getElementById('cfg-cluster').value.trim();
-  return `${base}/player.html?game=${GAME_ID}&team=${team}&key=${encodeURIComponent(key)}&cluster=${encodeURIComponent(cluster)}`;
+  const base=window.location.origin;
+  return `${base}/player.html?game=${GAME_ID}&team=${team}&key=${encodeURIComponent(PUSHER_KEY)}&cluster=${encodeURIComponent(PUSHER_CLUSTER)}`;
 }
 
 document.getElementById('show-qr-a').addEventListener('click',()=>showQR('a'));
