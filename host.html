@@ -141,7 +141,21 @@ input[type=text]:focus{border-color:var(--gold)}
 .w-btn{padding:.85rem 2.5rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer}
 @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 
-@media(max-width:620px){
+/* TIMER */
+.timer-ring{display:flex;align-items:center;justify-content:center;margin-bottom:.5rem}
+.timer-circle{width:56px;height:56px;border-radius:50%;background:var(--surface);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--text);transition:border-color .3s}
+.timer-circle.warn{border-color:var(--gold);color:var(--gold)}
+.timer-circle.danger{border-color:var(--red);color:var(--red)}
+/* AI QUESTIONS */
+.ai-bar{display:flex;gap:.5rem;align-items:center;margin-top:.75rem;flex-wrap:wrap}
+.ai-btn{padding:.5rem 1rem;background:#111;border:1px solid var(--border);border-radius:8px;color:var(--gold);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
+.ai-btn:hover{border-color:var(--gold)}
+.ai-btn:disabled{opacity:.45;cursor:not-allowed}
+.ai-status{font-size:.78rem;color:var(--muted)}
+.ai-count{font-size:.78rem;color:var(--green-m)}
+/* SKIP BUTTON */
+.skip-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
+.skip-btn:hover{border-color:var(--muted);color:var(--text)}
   .teams-grid,.arena{grid-template-columns:1fr}
   .logo{font-size:3rem}
   .q-box-inner{grid-template-columns:1fr}
@@ -153,7 +167,7 @@ input[type=text]:focus{border-color:var(--gold)}
 
 <!-- ══ PUSHER CONFIG ══ -->
 <div id="config">
-  <div class="logo">تحدي<span>الكنبة</span></div>
+  <div class="logo">Couch<span>Challenge</span></div>
   <p>أدخل بيانات Pusher لتفعيل اللعب الجماعي عبر الأجهزة.<br/>
   <a class="cfg-link" href="https://pusher.com" target="_blank">احصل على بيانات مجانية من pusher.com ←</a></p>
   <div class="cfg-card">
@@ -178,7 +192,7 @@ input[type=text]:focus{border-color:var(--gold)}
 
 <!-- ══ SETUP ══ -->
 <div id="setup">
-  <div class="logo">تحدي<span>الكنبة</span></div>
+  <div class="logo">Couch<span>Challenge</span></div>
   <p class="tagline">شاشة المضيف — تظهر لك فقط</p>
 
   <div class="teams-grid">
@@ -212,10 +226,26 @@ input[type=text]:focus{border-color:var(--gold)}
 
   <div class="card">
     <div class="sec-label">الأسئلة والأجوبة</div>
-    <p class="qa-hint">الإجابة تظهر <strong style="color:var(--green-m)">للمضيف فقط</strong> بعد الضغط على الجرس. اتركه فارغاً لاستخدام 20 سؤالاً جاهزاً.</p>
-    <div id="qa-list"></div>
-    <button class="add-qa-btn" id="add-qa-btn">+ أضف سؤالاً</button>
+    <p class="qa-hint">الإجابة تظهر <strong style="color:var(--green-m)">للمضيف فقط</strong> بعد الضغط على الجرس.</p>
+    <div class="ai-bar">
+      <button class="ai-btn" id="ai-gen-btn">توليد 100 سؤال بالذكاء الاصطناعي</button>
+      <span class="ai-status" id="ai-status"></span>
+      <span class="ai-count" id="ai-count"></span>
+    </div>
+    <div id="qa-list" style="margin-top:.75rem"></div>
+    <button class="add-qa-btn" id="add-qa-btn">+ أضف سؤالاً يدوياً</button>
     <p class="default-note" id="default-note">✓ لا توجد أسئلة مخصصة — سيتم استخدام الأسئلة الجاهزة</p>
+  </div>
+
+  <div class="card">
+    <div class="sec-label">إعدادات اللعبة</div>
+    <label class="fl">وقت الإجابة (ثانية)</label>
+    <div class="sz-row" id="timer-btns">
+      <div class="sz" data-sec="15">15</div>
+      <div class="sz on" data-sec="30">30</div>
+      <div class="sz" data-sec="45">45</div>
+      <div class="sz" data-sec="60">60</div>
+    </div>
   </div>
 
   <button class="start-btn" id="start-btn">ابدأ اللعبة وشارك الروابط</button>
@@ -224,8 +254,8 @@ input[type=text]:focus{border-color:var(--gold)}
 <!-- ══ GAME ══ -->
 <div id="game">
   <div class="game-header">
-    <div class="game-logo">تحدي<span style="color:#fff">الكنبة</span></div>
-    <div class="game-meta">الجولة <span id="round-n">1</span> &nbsp;·&nbsp; السؤال&nbsp;<span id="q-n">1</span></div>
+    <div class="game-logo">Couch<span style="color:#fff">Challenge</span></div>
+    <div class="game-meta">Round <span id="round-n">1</span> &nbsp;·&nbsp; Q&nbsp;<span id="q-n">1</span></div>
   </div>
 
   <div class="arena">
@@ -254,14 +284,17 @@ input[type=text]:focus{border-color:var(--gold)}
   <div class="q-box">
     <div class="q-box-inner">
       <div>
-        <div class="q-label">السؤال <span id="ql-n">1</span></div>
+        <div class="q-label">سؤال <span id="ql-n">1</span></div>
         <div class="q-text" id="q-text">في انتظار البدء...</div>
         <div class="q-status" id="q-status">في انتظار الجرس...</div>
       </div>
-      <div class="answer-card" id="answer-card">
-        <div class="ac-eyebrow">الإجابة الصحيحة</div>
-        <div class="ac-answer" id="answer-text">—</div>
-        <div class="ac-note">للمضيف فقط</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem">
+        <div class="timer-ring"><div class="timer-circle" id="timer-circle">—</div></div>
+        <div class="answer-card" id="answer-card">
+          <div class="ac-eyebrow">الإجابة الصحيحة</div>
+          <div class="ac-answer" id="answer-text">—</div>
+          <div class="ac-note">للمضيف فقط</div>
+        </div>
       </div>
     </div>
   </div>
@@ -283,6 +316,7 @@ input[type=text]:focus{border-color:var(--gold)}
       <button class="ctrl" id="show-qr-b">رابط الفريق ب</button>
     </div>
     <div style="display:flex;gap:.5rem">
+      <button class="skip-btn" id="skip-btn">تخطي السؤال</button>
       <button class="ctrl" id="new-game-btn">لعبة جديدة</button>
     </div>
   </div>
@@ -330,7 +364,55 @@ const DEFAULT_QA=[
 ];
 
 
-// ── SIZE BUTTONS ──
+// ── TIMER SETTING ──
+let TIMER_SECS = 30;
+document.querySelectorAll('[data-sec]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-sec]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    TIMER_SECS = parseInt(b.dataset.sec);
+  });
+});
+
+// ── AI QUESTION GENERATION ──
+document.getElementById('ai-gen-btn').addEventListener('click', generateQuestions);
+
+async function generateQuestions(){
+  const btn = document.getElementById('ai-gen-btn');
+  const status = document.getElementById('ai-status');
+  btn.disabled = true;
+  status.textContent = 'جاري التوليد...';
+  try{
+    const res = await fetch('/api/generate-questions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({count:100,lang:'ar'})});
+    const data = await res.json();
+    if(data.questions && data.questions.length){
+      qaEntries = data.questions;
+      renderQA();
+      document.getElementById('ai-count').textContent = `تم توليد ${data.questions.length} سؤال`;
+      status.textContent = '';
+    } else {
+      status.textContent = 'فشل التوليد، حاول مجدداً';
+    }
+  }catch(e){
+    status.textContent = 'خطأ في الاتصال بالـ API';
+  }
+  btn.disabled = false;
+}
+
+// Load cached questions from KV if available
+(async()=>{
+  try{
+    const res = await fetch('/api/get-questions');
+    if(res.ok){
+      const data = await res.json();
+      if(data.questions && data.questions.length){
+        qaEntries = data.questions;
+        renderQA();
+        document.getElementById('ai-count').textContent = `${data.questions.length} سؤال محفوظ`;
+      }
+    }
+  }catch(e){}
+})();
 document.querySelectorAll('.sz').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll(`[data-t="${b.dataset.t}"]`).forEach(x=>x.classList.remove('on'));
@@ -388,7 +470,7 @@ document.getElementById('cfg-btn').addEventListener('click',async()=>{
       setTimeout(rej,8000);
     });
     // Save to session
-    sessionStorage.setItem('cc_pusher',JSON.stringify({key,cluster,endpoint:ENDPOINT}));
+    localStorage.setItem('cc_pusher',JSON.stringify({key,cluster,endpoint:ENDPOINT}));
     document.getElementById('config').style.display='none';
     document.getElementById('setup').style.display='block';
   }catch(e){
@@ -399,7 +481,7 @@ document.getElementById('cfg-btn').addEventListener('click',async()=>{
 
 // Auto-restore credentials
 (()=>{
-  const saved=sessionStorage.getItem('cc_pusher');
+  const saved=localStorage.getItem('cc_pusher');
   if(saved){
     const {key,cluster,endpoint}=JSON.parse(saved);
     document.getElementById('cfg-key').value=key;
@@ -421,26 +503,27 @@ async function trigger(event, data){
 }
 
 // ── GAME STATE ──
-let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0,round:1,phase:'idle',buzzedTeam:null};
+let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0,round:1,phase:'idle',buzzedTeam:null,buzzedPlayerName:'',timerSecs:30};
+let timerInterval=null;
 
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
 
 document.getElementById('start-btn').addEventListener('click',()=>{
-  const saved=sessionStorage.getItem('cc_pusher');
+  const saved=localStorage.getItem('cc_pusher');
   if(!saved){alert('لم يتم إعداد Pusher.');return;}
   const {key,cluster,endpoint}=JSON.parse(saved);
   ENDPOINT=endpoint;
 
-  G.names.a=document.getElementById('name-a').value.trim()||'Team A';
-  G.names.b=document.getElementById('name-b').value.trim()||'Team B';
+  G.names.a=document.getElementById('name-a').value.trim()||'الفريق أ';
+  G.names.b=document.getElementById('name-b').value.trim()||'الفريق ب';
   G.sizes.a=getSz('a');G.sizes.b=getSz('b');
+  G.timerSecs=TIMER_SECS;
   GAME_ID=Math.random().toString(36).slice(2,8).toUpperCase();
   ['a','b'].forEach(t=>{G.players[t]=[];for(let i=1;i<=G.sizes[t];i++) G.players[t].push({id:`${t}${i}`,label:`P${i}`,onCouch:false,playerName:''});});
   const custom=qaEntries.filter(e=>e.q.trim());
   G.questions=shuffle(custom.length>=3?[...custom]:[...DEFAULT_QA,...custom]);
   G.qIdx=0;G.round=1;G.phase='idle';
 
-  // Subscribe to game channel
   if(!pusher){pusher=new Pusher(key,{cluster});}
   channel=pusher.subscribe(`game-${GAME_ID}`);
   channel.bind('buzz',onBuzzEvent);
@@ -453,6 +536,16 @@ document.getElementById('start-btn').addEventListener('click',()=>{
   document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
   document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
   renderTeams();loadQuestion();
+});
+
+document.getElementById('skip-btn').addEventListener('click',()=>{
+  if(G.phase==='done') return;
+  stopTimer();
+  G.qIdx++;
+  hideAnswer();
+  document.getElementById('action-box').style.display='none';
+  trigger('action',{action:'SKIP',gameId:GAME_ID});
+  setTimeout(loadQuestion,300);
 });
 
 // ── PLAYER EVENTS ──
@@ -482,6 +575,41 @@ function onBuzzEvent(data){
   onBuzz(team,name);
 }
 
+
+// ── TIMER ──
+function startTimer(){
+  stopTimer();
+  let secs = G.timerSecs;
+  updateTimerUI(secs);
+  trigger('timer',{secs,gameId:GAME_ID});
+  timerInterval = setInterval(()=>{
+    secs--;
+    updateTimerUI(secs);
+    trigger('timer',{secs,gameId:GAME_ID});
+    if(secs<=0){
+      stopTimer();
+      if(G.phase==='idle'){
+        document.getElementById('q-status').textContent='انتهى الوقت! السؤال التالي...';
+        trigger('action',{action:'TIMEOUT',gameId:GAME_ID});
+        G.qIdx++;
+        setTimeout(loadQuestion,1000);
+      }
+    }
+  },1000);
+}
+
+function stopTimer(){
+  clearInterval(timerInterval);
+  timerInterval=null;
+  updateTimerUI(null);
+}
+
+function updateTimerUI(secs){
+  const el=document.getElementById('timer-circle');
+  if(secs===null){el.textContent='—';el.className='timer-circle';return;}
+  el.textContent=secs;
+  el.className='timer-circle'+(secs<=10?' danger':secs<=20?' warn':'');
+}
 
 // ── RENDER ──
 function renderTeams(){
@@ -522,12 +650,14 @@ function loadQuestion(){
   document.getElementById('ql-n').textContent=G.qIdx+1;
   document.getElementById('q-n').textContent=G.qIdx+1;
   document.getElementById('round-n').textContent=G.round;
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',currentQ:item.q,qIdx:G.qIdx,round:G.round});
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',currentQ:item.q,qIdx:G.qIdx,round:G.round,timerSecs:G.timerSecs});
+  startTimer();
 }
 
 function onBuzz(team,playerName){
   G.buzzedPlayerName = playerName;
   if(G.phase!=='idle') return;
+  stopTimer();
   G.phase='buzzed';G.buzzedTeam=team;
   const item=G.questions[G.qIdx];
   document.getElementById('answer-text').textContent=item&&item.a?item.a:'(لا توجد إجابة)';
