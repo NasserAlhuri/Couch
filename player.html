@@ -263,7 +263,7 @@ function onGameState(data){
   if(data.phase==='idle'){
     phase='idle'; buzzLocked=false;
     const myPlayers=data.players&&data.players[TEAM];
-    const me=myPlayers&&myPlayers.find(p=>p.playerName===myName);
+    const me=myPlayers&&myPlayers.find(p=>p.playerName===myName||p.label===myName.slice(0,4));
     if(me&&me.onCouch){
       disableBuzz();
       setStatus('أنت على الكنبة — انتظر حتى يُرجعوك','');
@@ -288,16 +288,8 @@ function onBuzzed(data){
 
 function onAction(data){
   if(data.gameId!==GAME_ID) return;
-  if(data.action==='WRONG'){
-    phase='idle'; buzzLocked=false;
-    // Will check couch status from next game-state, but re-enable optimistically
-    enableBuzz();
-    setStatus('جاهز! اضغط حين تعرف الجواب','ready');
-  } else if(data.action==='SKIP'){
-    phase='idle'; buzzLocked=false;
-    enableBuzz();
-    setStatus('جاهز! اضغط حين تعرف الجواب','ready');
-  }
+  phase='idle'; buzzLocked=false;
+  // onGameState will re-enable buzzer correctly based on couch status
 }
 
 function onTeamFull(data){
