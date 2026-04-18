@@ -97,7 +97,13 @@ body.light{
 .dot.tb{background:var(--blue-l);border-color:var(--blue)}
 .dot.tb.out{opacity:.3;background:transparent;border-style:dashed}
 
-/* WIN */
+/* LEAVE / SWITCH */
+.player-actions{display:flex;gap:.5rem;justify-content:center;padding:.6rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0}
+.pa-btn{flex:1;max-width:160px;padding:.55rem .5rem;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.8rem;transition:all .15s}
+.pa-btn:hover{border-color:var(--muted);color:var(--text)}
+.pa-btn.leave:hover{border-color:var(--red);color:var(--red)}
+.pa-btn.switch-t:hover{border-color:var(--gold);color:var(--gold)}
+.pa-btn:disabled{opacity:.3;pointer-events:none}
 #win-screen{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;z-index:100}
 #win-screen.show{display:flex}
 #win-screen h1{font-size:3rem;font-weight:700;color:var(--gold);margin-bottom:.5rem}
@@ -152,6 +158,10 @@ body.light{
       <div><div class="cs-team-name ta" id="cs-name-a">الفريق أ</div><div class="dots" id="cs-dots-a"></div></div>
       <div><div class="cs-team-name tb" id="cs-name-b">الفريق ب</div><div class="dots" id="cs-dots-b"></div></div>
     </div>
+  </div>
+  <div class="player-actions">
+    <button class="pa-btn switch-t" id="switch-btn">🔄 تغيير الفريق</button>
+    <button class="pa-btn leave" id="leave-btn">🚪 مغادرة اللعبة</button>
   </div>
 </div>
 
@@ -239,6 +249,7 @@ function connectPusher(){
         channel.bind('buzzed',onBuzzed);
         channel.bind('action',onAction);
         channel.bind('win',onWin);
+        channel.bind('rematch',onRematch);
         channel.bind('team-full',onTeamFull);
         channel.bind('name-taken',onNameTaken);
         channel.bind('timeout',()=>{alert('انتهت اللعبة بسبب الخمول.');sessionStorage.removeItem(SESSION_KEY);location.reload();});
@@ -282,6 +293,24 @@ async function notifyHost(event,data){
 
 function onGameState(data){
   if(data.gameId!==GAME_ID) return;
+
+  // Detect if we were switched to another team
+  if(data.players){
+    const inOldTeam=data.players[TEAM]&&data.players[TEAM].some(p=>p.playerName===myName);
+    const otherTeam=TEAM==='a'?'b':'a';
+    const inNewTeam=data.players[otherTeam]&&data.players[otherTeam].some(p=>p.playerName===myName);
+    if(!inOldTeam&&inNewTeam){
+      // We've been switched — update TEAM
+      TEAM=otherTeam;
+      teamName=TEAM==='a'?'الفريق أ':'الفريق ب';
+      if(data.names) teamName=data.names[TEAM];
+      buzzBtn.className='buzz-btn t'+TEAM;
+      const pb=document.getElementById('p-name-badge');
+      pb.className='p-name-badge t'+TEAM;
+      // Update session
+      try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({name:myName}));}catch(e){}
+    }
+  }
 
   // Show game screen (switch from waiting)
   document.getElementById('waiting-screen').style.display='none';
@@ -415,6 +444,40 @@ function showError(msg){
 
 // Set buzzer color
 buzzBtn.classList.add('t'+TEAM);
+
+// ── LEAVE ──
+document.getElementById('leave-btn').addEventListener('click',()=>{
+  if(!confirm('هل تريد مغادرة اللعبة؟')) return;
+  notifyHost('leave',{team:TEAM,name:myName,gameId:GAME_ID});
+  sessionStorage.removeItem(SESSION_KEY);
+  // Show a simple "left" message
+  document.getElementById('player').style.display='none';
+  const e=document.getElementById('error');
+  e.classList.add('show');
+  document.getElementById('error-msg').textContent='غادرت اللعبة. يمكنك إعادة المسح للانضمام مجدداً.';
+});
+
+// ── SWITCH TEAM ──
+document.getElementById('switch-btn').addEventListener('click',()=>{
+  const toTeam=TEAM==='a'?'b':'a';
+  const toName=toTeam==='a'?'الفريق أ':'الفريق ب';
+  if(!confirm(`هل تريد الانتقال إلى ${toName}؟`)) return;
+  notifyHost('switch-team',{fromTeam:TEAM,toTeam,name:myName,gameId:GAME_ID});
+  // Update local team
+  // Wait for game-state to confirm; disable button temporarily
+  document.getElementById('switch-btn').disabled=true;
+  setTimeout(()=>{document.getElementById('switch-btn').disabled=false;},2000);
+});
+
+// ── REMATCH ──
+function onRematch(data){
+  if(data.gameId!==GAME_ID) return;
+  // Reset win screen and go back to waiting/playing
+  document.getElementById('win-screen').classList.remove('show');
+  phase='idle'; buzzLocked=false;
+  enableBuzz();
+  setStatus('جاهز! اضغط حين تعرف الجواب','ready');
+}
 </script>
 </body>
 </html>
