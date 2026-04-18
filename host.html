@@ -124,6 +124,16 @@ input[type=text]:focus{border-color:var(--gold)}
 .w-btn{padding:.85rem 2.5rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer}
 @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 
+/* RESUME BANNER */
+#resume-banner{display:none;background:#1a1a00;border:1px solid var(--gold);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+#resume-banner.show{display:flex}
+.resume-text{font-size:.9rem;color:var(--gold)}
+.resume-btns{display:flex;gap:.5rem}
+.resume-yes{padding:.45rem 1rem;background:var(--gold);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;font-weight:700}
+.resume-no{padding:.45rem 1rem;background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem}
+/* UNDO BTN */
+.undo-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s;display:none}
+.undo-btn:hover{border-color:var(--gold);color:var(--gold)}
 /* SKIP BUTTON */
 .skip-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
 .skip-btn:hover{border-color:var(--muted);color:var(--text)}
@@ -138,6 +148,13 @@ input[type=text]:focus{border-color:var(--gold)}
 
 <!-- ══ SETUP ══ -->
 <div id="setup">
+  <div id="resume-banner">
+    <span class="resume-text">يوجد لعبة محفوظة — هل تريد الاستئناف؟</span>
+    <div class="resume-btns">
+      <button class="resume-yes" id="resume-yes">استئناف</button>
+      <button class="resume-no" id="resume-no">لعبة جديدة</button>
+    </div>
+  </div>
   <div class="logo">تحدي<span>الكنبة</span></div>
   <p class="tagline">شاشة المضيف — تظهر لك فقط</p>
 
@@ -243,6 +260,7 @@ input[type=text]:focus{border-color:var(--gold)}
       <button class="ctrl" id="show-qr-b">رابط الفريق ب</button>
     </div>
     <div style="display:flex;gap:.5rem">
+      <button class="undo-btn" id="undo-btn">تراجع ↩</button>
       <button class="skip-btn" id="skip-btn">تخطي السؤال</button>
       <button class="ctrl" id="next-q-btn" style="display:none">السؤال التالي ←</button>
       <button class="ctrl" id="new-game-btn">لعبة جديدة</button>
@@ -347,30 +365,109 @@ async function trigger(event, data){
 
 // ── GAME STATE ──
 let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0,round:1,phase:'idle',buzzedTeam:null,buzzedPlayerName:''};
+let undoStack=[];
+let idleTimer=null;
+const IDLE_TIMEOUT=2*60*60*1000; // 2 hours
 
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+// ── SAVE / RESTORE STATE ──
+function saveState(){
+  try{
+    sessionStorage.setItem('cc_game',JSON.stringify({G,GAME_ID,savedAt:Date.now()}));
+  }catch(e){}
+}
+
+function clearSavedState(){
+  sessionStorage.removeItem('cc_game');
+}
+
+function pushUndo(){
+  undoStack.push(JSON.stringify({G:JSON.parse(JSON.stringify(G)),GAME_ID}));
+  if(undoStack.length>5) undoStack.shift(); // keep last 5
+  document.getElementById('undo-btn').style.display='inline-block';
+}
+
+// ── IDLE TIMEOUT ──
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  idleTimer=setTimeout(()=>{
+    if(G.phase==='done') return;
+    trigger('timeout',{gameId:GAME_ID});
+    clearSavedState();
+    alert('انتهت مدة الخمول (ساعتان). سيتم إعادة تحميل الصفحة.');
+    location.reload();
+  }, IDLE_TIMEOUT);
+}
+
+// ── RESUME CHECK ──
+(()=>{
+  try{
+    const saved=sessionStorage.getItem('cc_game');
+    if(!saved) return;
+    const {savedAt}=JSON.parse(saved);
+    // Ignore if older than 2 hours
+    if(Date.now()-savedAt > IDLE_TIMEOUT){ sessionStorage.removeItem('cc_game'); return; }
+    document.getElementById('resume-banner').classList.add('show');
+  }catch(e){}
+})();
+
+document.getElementById('resume-yes').addEventListener('click',()=>{
+  try{
+    const saved=JSON.parse(sessionStorage.getItem('cc_game'));
+    G=saved.G; GAME_ID=saved.GAME_ID;
+    document.getElementById('resume-banner').classList.remove('show');
+    startGameUI();
+    loadQuestion();
+  }catch(e){ alert('تعذّر استئناف اللعبة.'); }
+});
+
+document.getElementById('resume-no').addEventListener('click',()=>{
+  clearSavedState();
+  document.getElementById('resume-banner').classList.remove('show');
+});
 
 document.getElementById('start-btn').addEventListener('click',()=>{
   G.names.a=document.getElementById('name-a').value.trim()||'الفريق أ';
   G.names.b=document.getElementById('name-b').value.trim()||'الفريق ب';
   G.sizes.a=getSz('a');G.sizes.b=getSz('b');
+
+  // ── Duplicate game ID prevention ──
   GAME_ID=Math.random().toString(36).slice(2,8).toUpperCase();
+
   ['a','b'].forEach(t=>{G.players[t]=[];for(let i=1;i<=G.sizes[t];i++) G.players[t].push({id:`${t}${i}`,label:`P${i}`,onCouch:false,playerName:''});});
   const custom=qaEntries.filter(e=>e.q.trim());
   G.questions=shuffle(custom.length>=3?[...custom]:[...QUESTION_BANK,...custom]);
   G.qIdx=0;G.round=1;G.phase='idle';
+  undoStack=[];
+  clearSavedState();
+  startGameUI();
+  loadQuestion();
+});
 
+function startGameUI(){
   channel=pusher.subscribe(`game-${GAME_ID}`);
   channel.bind('buzz',onBuzzEvent);
   channel.bind('join',onJoinEvent);
-
   document.getElementById('setup').style.display='none';
   document.getElementById('game').style.display='block';
   document.getElementById('tp-name-a').textContent=G.names.a;
   document.getElementById('tp-name-b').textContent=G.names.b;
   document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
   document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
-  renderTeams();loadQuestion();
+  renderTeams();
+  resetIdleTimer();
+}
+
+// ── UNDO ──
+document.getElementById('undo-btn').addEventListener('click',()=>{
+  if(!undoStack.length) return;
+  const prev=JSON.parse(undoStack.pop());
+  G=prev.G;
+  if(!undoStack.length) document.getElementById('undo-btn').style.display='none';
+  renderTeams();
+  loadQuestion();
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round});
 });
 
 // ── SKIP BUTTON (always visible) ──
@@ -381,22 +478,30 @@ document.getElementById('skip-btn').addEventListener('click',()=>{
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
   trigger('action',{action:'SKIP',gameId:GAME_ID});
+  saveState();
+  resetIdleTimer();
   loadQuestion();
 });
 
 // ── PLAYER EVENTS ──
 function onJoinEvent(data){
   const {team,name,playerId}=data;
-  // Check if team is full
+  // Check team full
   const filled=G.players[team]?G.players[team].filter(p=>p.playerName!=='').length:0;
   if(filled>=G.sizes[team]){
-    // Notify this player that team is full
     trigger('team-full',{gameId:GAME_ID,team,name,playerId});
+    return;
+  }
+  // Check duplicate name on same team
+  const dupName=G.players[team]&&G.players[team].find(p=>p.playerName===name);
+  if(dupName){
+    trigger('name-taken',{gameId:GAME_ID,team,name,playerId});
     return;
   }
   const p=G.players[team]&&G.players[team].find(pl=>pl.playerName===''||pl.id===playerId);
   if(p){p.playerName=name;p.label=name.slice(0,4);}
   renderTeams();
+  saveState();
   const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
   trigger('game-state',state);
   setTimeout(()=>trigger('game-state',state),600);
@@ -415,6 +520,8 @@ document.getElementById('next-q-btn').addEventListener('click',()=>{
   G.qIdx++; G.round++;
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
+  saveState();
+  resetIdleTimer();
   loadQuestion();
 });
 
@@ -492,10 +599,13 @@ function hideAnswer(){document.getElementById('answer-card').classList.remove('s
 function doSit(team){
   const standing=G.players[team].filter(p=>!p.onCouch);
   if(!standing.length) return;
+  pushUndo();
   const buzzer=standing.find(p=>p.playerName===G.buzzedPlayerName)||standing[0];
   buzzer.onCouch=true;
   G.qIdx++;G.round++;
   renderTeams();
+  saveState();
+  resetIdleTimer();
   trigger('action',{action:'SIT',team,gameId:GAME_ID});
   checkWin(team);
 }
@@ -503,8 +613,11 @@ function doSit(team){
 function doPullPlayer(oppTeam,playerId){
   const p=G.players[oppTeam].find(p=>p.id===playerId);
   if(!p) return;
+  pushUndo();
   p.onCouch=false;
   renderTeams();
+  saveState();
+  resetIdleTimer();
   trigger('action',{action:'PULL',team:oppTeam,gameId:GAME_ID});
   document.getElementById('action-box').style.display='none';
   document.getElementById('q-status').textContent=`${p.playerName||p.label} رجع للعبة!`;
@@ -519,6 +632,7 @@ function doWrong(){
   document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
   document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
   document.getElementById('q-status').textContent='إجابة خاطئة! حاول مجدداً...';
+  resetIdleTimer();
   trigger('action',{action:'WRONG',gameId:GAME_ID});
 }
 
