@@ -200,7 +200,7 @@ if(!GAME_ID||!TEAM||!PUSHER_KEY||!PUSHER_CLUSTER){
 
 let myName='', teamName=TEAM==='a'?'الفريق أ':'الفريق ب';
 let pusher=null, channel=null;
-let phase='idle', buzzLocked=false;
+let phase='idle', buzzLocked=false, myLockedOut=false;
 
 // ── RESTORE SESSION (player refresh) ──
 const SESSION_KEY=`cc_player_${GAME_ID}`;
@@ -342,9 +342,15 @@ function onGameState(data){
     const myPlayers=data.players&&data.players[TEAM];
     const me=myPlayers&&myPlayers.find(p=>p.playerName===myName||p.label===myName.slice(0,4));
     if(me&&me.onCouch){
+      myLockedOut=false;
       disableBuzz();
       setStatus('أنت على الكنبة — انتظر حتى يُرجعوك','');
+    } else if(data.lockedOut&&data.lockedOut[`${TEAM}-${myName}`]){
+      myLockedOut=true;
+      disableBuzz();
+      setStatus('أجبت خطأ — انتظر السؤال التالي 🔒','buzzed-other');
     } else {
+      myLockedOut=false;
       enableBuzz();
       setStatus('جاهز! اضغط حين تعرف الجواب','ready');
     }
@@ -365,8 +371,8 @@ function onBuzzed(data){
 
 function onAction(data){
   if(data.gameId!==GAME_ID) return;
-  phase='idle'; buzzLocked=false;
-  // onGameState will re-enable buzzer correctly based on couch status
+  phase='idle'; buzzLocked=false; myLockedOut=false;
+  // onGameState will re-enable buzzer correctly based on couch/lockout status
 }
 
 function onNameTaken(data){
@@ -410,7 +416,7 @@ buzzBtn.addEventListener('touchstart',e=>{e.preventDefault();doBuzz();},{passive
 
 function doBuzz(){
   if(buzzBtn.classList.contains('disabled')) return;
-  if(phase!=='idle'||buzzLocked) return;
+  if(phase!=='idle'||buzzLocked||myLockedOut) return;
   buzzLocked=true; phase='buzzed';
   buzzBtn.classList.add('fired');
   disableBuzz();
