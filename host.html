@@ -669,6 +669,7 @@ function doWrong(){
   document.getElementById('q-status').textContent='إجابة خاطئة! حاول مجدداً...';
   resetIdleTimer();
   trigger('action',{action:'WRONG',gameId:GAME_ID});
+  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
 }
 
 function checkWin(team){
