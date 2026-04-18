@@ -666,6 +666,7 @@ document.getElementById('show-qr-b').addEventListener('click',()=>showQR('b'));
 document.getElementById('modal-close').addEventListener('click',()=>document.getElementById('qr-modal').classList.remove('open'));
 
 function showQR(team){
+  if(!GAME_ID){ alert('ابدأ اللعبة أولاً'); return; }
   const url=getPlayerURL(team);
   document.getElementById('modal-title').textContent=`${G.names[team]} — انضمام`;
   document.getElementById('modal-sub').textContent=`امسح الـ QR أو شارك الرابط مع لاعبي ${G.names[team]}`;
