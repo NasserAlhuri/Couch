@@ -507,19 +507,33 @@ document.getElementById('skip-btn').addEventListener('click',()=>{
 // ── PLAYER EVENTS ──
 function onJoinEvent(data){
   const {team,name,playerId}=data;
+
+  // Check if this player already exists (rejoining after refresh)
+  const existing=G.players[team]&&G.players[team].find(p=>p.playerName===name||p.label===name.slice(0,4));
+  if(existing){
+    // Player is rejoining — just resend state, no new slot
+    const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
+    trigger('game-state',state);
+    setTimeout(()=>trigger('game-state',state),600);
+    return;
+  }
+
   // Check team full
   const filled=G.players[team]?G.players[team].filter(p=>p.playerName!=='').length:0;
   if(filled>=G.sizes[team]){
     trigger('team-full',{gameId:GAME_ID,team,name,playerId});
     return;
   }
-  // Check duplicate name — allow rejoin if same playerId
+
+  // Check duplicate name from a different player
   const dupName=G.players[team]&&G.players[team].find(p=>p.playerName===name);
   if(dupName&&playerId!==`${team}-${name}`){
     trigger('name-taken',{gameId:GAME_ID,team,name,playerId});
     return;
   }
-  const p=G.players[team]&&G.players[team].find(pl=>pl.playerName===''||pl.id===playerId);
+
+  // New player — assign to empty slot
+  const p=G.players[team]&&G.players[team].find(pl=>pl.playerName==='');
   if(p){p.playerName=name;p.label=name.slice(0,4);}
   renderTeams();
   saveState();
