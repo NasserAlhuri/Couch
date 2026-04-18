@@ -264,6 +264,7 @@ function onGameState(data){
     phase='idle'; buzzLocked=false;
     const myPlayers=data.players&&data.players[TEAM];
     const me=myPlayers&&myPlayers.find(p=>p.playerName===myName||p.label===myName.slice(0,4));
+    console.log('me:', me, 'myName:', myName, 'players:', data.players?.[TEAM]); // add here
     if(me&&me.onCouch){
       disableBuzz();
       setStatus('أنت على الكنبة — انتظر حتى يُرجعوك','');
