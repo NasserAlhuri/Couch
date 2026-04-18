@@ -18,6 +18,12 @@
 }
 body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
+body.light{
+  --bg:#f5f5f0;--surface:#ebebе5;--card:#fff;--border:#ddd;
+  --text:#111;--muted:#666;--subtle:#aaa;
+}
+.mode-toggle{position:fixed;top:1rem;left:1rem;z-index:999;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.35rem .8rem;cursor:pointer;font-size:.8rem;color:var(--muted);font-family:'Tajawal',sans-serif;transition:all .2s}
+.mode-toggle:hover{border-color:var(--gold);color:var(--gold)}
 /* SETUP */
 #setup{max-width:700px;margin:0 auto;padding:2.5rem 1.5rem;display:block}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:4rem;letter-spacing:3px;color:var(--text);line-height:1}
@@ -145,6 +151,7 @@ input[type=text]:focus{border-color:var(--gold)}
 </style>
 </head>
 <body>
+<button class="mode-toggle" id="mode-toggle">☀️ فاتح</button>
 
 <!-- ══ SETUP ══ -->
 <div id="setup">
@@ -286,7 +293,19 @@ input[type=text]:focus{border-color:var(--gold)}
 </div>
 
 <script>
-// ── QUESTION BANK (loaded from questions.json) ──
+// ── DARK/LIGHT MODE ──
+(()=>{
+  const btn=document.getElementById('mode-toggle');
+  const saved=localStorage.getItem('cc_mode');
+  if(saved==='light'){document.body.classList.add('light');btn.textContent='🌙 داكن';}
+  btn.addEventListener('click',()=>{
+    const isLight=document.body.classList.toggle('light');
+    btn.textContent=isLight?'🌙 داكن':'☀️ فاتح';
+    localStorage.setItem('cc_mode',isLight?'light':'dark');
+  });
+})();
+
+// ── QUESTION BANK ──
 let QUESTION_BANK = [];
 
 (async()=>{
@@ -492,9 +511,9 @@ function onJoinEvent(data){
     trigger('team-full',{gameId:GAME_ID,team,name,playerId});
     return;
   }
-  // Check duplicate name on same team
+  // Check duplicate name — allow rejoin if same playerId
   const dupName=G.players[team]&&G.players[team].find(p=>p.playerName===name);
-  if(dupName){
+  if(dupName&&playerId!==`${team}-${name}`){
     trigger('name-taken',{gameId:GAME_ID,team,name,playerId});
     return;
   }
