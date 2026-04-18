@@ -464,10 +464,11 @@ document.getElementById('start-btn').addEventListener('click',()=>{
 document.getElementById('skip-btn').addEventListener('click',()=>{
   if(G.phase==='done') return;
   G.qIdx++;
+  G.phase='idle';
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
   trigger('action',{action:'SKIP',gameId:GAME_ID});
-  prepareQuestion();
+  loadQuestion();
 });
 
 // ── PLAYER EVENTS ──
@@ -477,7 +478,7 @@ function onJoinEvent(data){
   const filled=G.players[team]?G.players[team].filter(p=>p.playerName!=='').length:0;
   if(filled>=G.sizes[team]){
     // Notify this player that team is full
-    trigger('team-full',{gameId:GAME_ID,team,name});
+    trigger('team-full',{gameId:GAME_ID,team,name,playerId});
     return;
   }
   const p=G.players[team]&&G.players[team].find(pl=>pl.playerName===''||pl.id===playerId);
@@ -599,10 +600,14 @@ function doPullPlayer(oppTeam,playerId){
 }
 
 function doWrong(){
+  G.phase='idle'; G.buzzedTeam=null;
   document.getElementById('action-box').style.display='none';
-  document.getElementById('q-status').textContent='إجابة خاطئة!';
+  document.getElementById('buzz-ind-a').className='buzz-ind';
+  document.getElementById('buzz-ind-b').className='buzz-ind';
+  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
+  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
+  document.getElementById('q-status').textContent='إجابة خاطئة! حاول مجدداً...';
   trigger('action',{action:'WRONG',gameId:GAME_ID});
-  document.getElementById('next-q-btn').style.display='inline-block';
 }
 
 function checkWin(team){
