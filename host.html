@@ -18,7 +18,6 @@
   --input-bg:#111;--input-text:#f0f0f0;
 }
 body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
 body.light{
   --bg:#f0f2f5;--surface:#e4e7ec;--card:#ffffff;--border:#c8cdd6;
   --text:#1a1a2e;--muted:#5a6275;--subtle:#9aa0ad;
@@ -26,11 +25,12 @@ body.light{
 }
 .mode-toggle{position:fixed;top:1rem;left:1rem;z-index:999;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.35rem .8rem;cursor:pointer;font-size:.8rem;color:var(--muted);font-family:'Tajawal',sans-serif;transition:all .2s}
 .mode-toggle:hover{border-color:var(--gold);color:var(--gold)}
+
 /* SETUP */
 #setup{max-width:700px;margin:0 auto;padding:2.5rem 1.5rem;display:block}
-.logo{font-family:'Tajawal',sans-serif;font-size:4rem;font-weight:900;letter-spacing:1px;color:var(--text);line-height:1}
+.logo{font-family:'Tajawal',sans-serif;font-size:3.5rem;font-weight:900;color:var(--text);line-height:1}
 .logo span{color:var(--gold)}
-.tagline{color:var(--muted);margin:.75rem 0 2.5rem;font-size:.95rem}
+.tagline{color:var(--muted);margin:.25rem 0 2.5rem;font-size:.95rem}
 .teams-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .team-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
 .team-card.ta{border-top:3px solid var(--red)}
@@ -53,31 +53,33 @@ input[type=text]:focus{border-color:var(--gold)}
 .add-qa-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem .9rem;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:.85rem;font-family:'Tajawal',sans-serif;transition:all .15s;margin-top:.35rem}
 .add-qa-btn:hover{border-color:var(--gold);color:var(--gold)}
 .default-note{font-size:.75rem;color:var(--subtle);margin-top:.6rem}
-.start-btn{width:100%;padding:1rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:opacity .15s;margin-top:1rem}
+.start-btn{width:100%;padding:1rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.4rem;font-weight:800;cursor:pointer;transition:opacity .15s;margin-top:1rem}
 .start-btn:hover{opacity:.88}
 
 /* GAME */
 #game{display:none;min-height:100vh;padding:1rem;max-width:960px;margin:0 auto}
 .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-.game-logo{font-family:'Tajawal',sans-serif;font-size:1.8rem;font-weight:900;letter-spacing:.5px;color:var(--gold)}
+.game-logo{font-family:'Tajawal',sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)}
 .game-meta{font-size:.8rem;color:var(--muted);text-align:right}
 .arena{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .team-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem}
 .team-panel.pa{border-top:3px solid var(--red)}
 .team-panel.pb{border-top:3px solid var(--blue)}
 .tp-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.75rem}
-.tp-name{font-family:'Tajawal',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.5px}
+.tp-name{font-size:1.15rem;font-weight:800}
 .pa .tp-name{color:var(--red-m)}
 .pb .tp-name{color:var(--blue-m)}
 .tp-count{font-size:.75rem;color:var(--muted)}
 .zone-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--subtle);margin-bottom:.35rem}
 .zone-players{display:flex;flex-wrap:wrap;gap:.35rem;min-height:36px}
 .couch-zone{background:var(--input-bg);border:1px dashed var(--border);border-radius:8px;padding:.35rem .4rem;min-height:44px;display:flex;flex-wrap:wrap;gap:.35rem;align-items:flex-start;margin-top:.5rem}
-.token{height:28px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;border:2px solid transparent;transition:all .25s;padding:0 .65rem;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+
+/* PILL TOKENS — full name, not circles */
+.token{height:28px;border-radius:20px;display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;border:2px solid transparent;padding:0 .65rem;white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis;transition:all .25s}
 .token.ta{background:var(--red-l);color:var(--red-d);border-color:var(--red)}
 .token.tb{background:var(--blue-l);color:var(--blue-d);border-color:var(--blue)}
-.token.couch{opacity:.35;border-style:dashed}
-.token.locked{opacity:.5;text-decoration:line-through;filter:grayscale(.5)}
+.token.couch{opacity:.3;border-style:dashed;background:transparent}
+.token.locked{opacity:.55;text-decoration:line-through;filter:grayscale(.5)}
 
 .q-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem}
 .q-box-inner{display:grid;grid-template-columns:1fr auto;gap:1.25rem;align-items:start}
@@ -92,17 +94,12 @@ input[type=text]:focus{border-color:var(--gold)}
 .ac-note{font-size:.68rem;color:#4a7a30}
 
 .buzz-bar{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem}
-.buzz-ind{padding:.75rem 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);text-align:center;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.3px;color:var(--muted);transition:all .3s}
-.buzz-ind.fired{background:var(--gold);color:#000;border-color:var(--gold);font-size:1.1rem}
-
-/* Connected players list */
-.players-connected{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
-.pc-badge{font-size:.7rem;padding:.2rem .55rem;border-radius:20px;font-weight:500}
-.pc-badge.ta{background:var(--red-l);color:var(--red-d)}
-.pc-badge.tb{background:var(--blue-l);color:var(--blue-d)}
+.buzz-ind{padding:.75rem 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);text-align:center;font-size:.95rem;font-weight:700;color:var(--muted);transition:all .3s}
+.buzz-ind.fired{background:var(--gold);color:#000;border-color:var(--gold)}
+.buzz-ind.locked-out{background:#1a0707;color:var(--red-m);border-color:var(--red)}
 
 .action-box{background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:1.25rem;margin-bottom:1rem;display:none}
-.action-title{font-family:'Tajawal',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:.3px;color:var(--gold);margin-bottom:.2rem}
+.action-title{font-size:1.2rem;font-weight:800;color:var(--gold);margin-bottom:.2rem}
 .action-sub{font-size:.82rem;color:var(--muted);margin-bottom:1rem}
 .action-btns{display:flex;flex-wrap:wrap;gap:.6rem}
 .act-btn{padding:.55rem 1.1rem;border-radius:9px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.9rem;font-weight:500;transition:all .15s}
@@ -112,14 +109,19 @@ input[type=text]:focus{border-color:var(--gold)}
 .act-btn.correct{border-color:#2d5a1a;color:#9fce60}
 .act-btn.correct:hover{background:var(--green);color:#fff;border-color:var(--green)}
 
-.footer-bar{display:flex;gap:.75rem;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.ctrl{padding:.5rem 1.1rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;transition:all .15s}
+.footer-bar{display:flex;gap:.75rem;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-top:.5rem}
+.ctrl{padding:.5rem 1.1rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
 .ctrl:hover{border-color:var(--muted)}
+.undo-btn,.redo-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s;display:none}
+.undo-btn:hover{border-color:var(--gold);color:var(--gold)}
+.redo-btn:hover{border-color:var(--blue-m);color:var(--blue-m)}
+.skip-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
+.skip-btn:hover{border-color:var(--muted);color:var(--text)}
 
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;min-width:300px;max-width:380px;width:90%;text-align:center;position:relative}
-.modal h2{font-family:'Tajawal',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:.3px;margin-bottom:.25rem}
+.modal h2{font-size:1.5rem;font-weight:800;margin-bottom:.25rem}
 .modal p{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem}
 .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;line-height:1}
 #qr-canvas{display:flex;justify-content:center;margin-bottom:1rem}
@@ -128,35 +130,23 @@ input[type=text]:focus{border-color:var(--gold)}
 
 #winner{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem}
 #winner.show{display:flex}
-#winner h1{font-family:'Tajawal',sans-serif;font-size:4.5rem;font-weight:900;letter-spacing:1px;color:var(--gold);animation:pop .5s ease}
+#winner h1{font-size:4rem;font-weight:900;color:var(--gold);animation:pop .5s ease}
 #winner p{font-size:1.2rem;color:var(--muted);margin:.5rem 0 2rem}
-.w-btn{padding:.85rem 2.5rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.5px;cursor:pointer}
+.w-btn{padding:.85rem 2.5rem;background:var(--gold);color:#000;border:none;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:1.1rem;font-weight:800;cursor:pointer}
 @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 
-/* RESUME BANNER */
-#resume-banner{display:none;background:#1a1a00;border:1px solid var(--gold);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+#resume-banner{display:none;background:#1a1a00;border:1px solid var(--gold);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
 #resume-banner.show{display:flex}
 .resume-text{font-size:.9rem;color:var(--gold)}
 .resume-btns{display:flex;gap:.5rem}
 .resume-yes{padding:.45rem 1rem;background:var(--gold);color:#000;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;font-weight:700}
 .resume-no{padding:.45rem 1rem;background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem}
-/* UNDO BTN */
-.undo-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s;display:none}
-.undo-btn:hover{border-color:var(--gold);color:var(--gold)}
-/* SKIP BUTTON */
-.skip-btn{padding:.5rem 1rem;border-radius:8px;border:1px solid var(--subtle);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .15s}
-.skip-btn:hover{border-color:var(--muted);color:var(--text)}
-  .teams-grid,.arena{grid-template-columns:1fr}
-  .logo{font-size:2.5rem}
-  .q-box-inner{grid-template-columns:1fr}
-  .answer-card{width:100%}
-}
+@media(max-width:600px){.teams-grid,.arena{grid-template-columns:1fr}.logo{font-size:2.5rem}.q-box-inner{grid-template-columns:1fr}.answer-card{width:100%}}
 </style>
 </head>
 <body>
 <button class="mode-toggle" id="mode-toggle">☀️ فاتح</button>
 
-<!-- ══ SETUP ══ -->
 <div id="setup">
   <div id="resume-banner">
     <span class="resume-text">يوجد لعبة محفوظة — هل تريد الاستئناف؟</span>
@@ -167,7 +157,6 @@ input[type=text]:focus{border-color:var(--gold)}
   </div>
   <div class="logo">تحدي<span> الكنبة </span></div>
   <p class="tagline">شاشة المضيف — تظهر لك فقط</p>
-
   <div class="teams-grid">
     <div class="team-card ta">
       <div class="sec-label" style="color:var(--red-m)">الفريق أ</div>
@@ -196,48 +185,43 @@ input[type=text]:focus{border-color:var(--gold)}
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="sec-label">الأسئلة والأجوبة</div>
-    <p class="qa-hint">الإجابة تظهر <strong style="color:var(--green-m)">للمضيف فقط</strong> بعد الضغط على الجرس. اتركه فارغاً لاستخدام بنك الأسئلة.</p>
+    <p class="qa-hint">الإجابة تظهر <strong style="color:var(--green-m)">للمضيف فقط</strong>. اتركه فارغاً لاستخدام بنك الأسئلة.</p>
     <div id="qa-list" style="margin-top:.75rem"></div>
     <button class="add-qa-btn" id="add-qa-btn">+ أضف سؤالاً يدوياً</button>
     <p class="default-note" id="default-note">✓ سيتم استخدام بنك الأسئلة (<span id="bank-count">...</span> سؤال)</p>
   </div>
-
   <button class="start-btn" id="start-btn">ابدأ اللعبة وشارك الروابط</button>
 </div>
 
-<!-- ══ GAME ══ -->
 <div id="game">
   <div class="game-header">
     <div class="game-logo">تحدي الكنبة</div>
     <div class="game-meta">جولة <span id="round-n">1</span> &nbsp;·&nbsp; س&nbsp;<span id="q-n">1</span></div>
   </div>
-
   <div class="arena">
-    <div class="team-panel pa" id="panel-a">
+    <div class="team-panel pa">
       <div class="tp-header">
         <div class="tp-name" id="tp-name-a">الفريق أ</div>
         <div class="tp-count"><span id="standing-a">3</span> واقف</div>
       </div>
-      <div class="zone-label">واقف</div>
+      <div class="zone-label">🧍 واقف</div>
       <div class="zone-players" id="zone-stand-a"></div>
-      <div class="zone-label" style="margin-top:.6rem">الكنبة</div>
+      <div class="zone-label" style="margin-top:.6rem">🛋️ الكنبة</div>
       <div class="couch-zone" id="zone-couch-a"></div>
     </div>
-    <div class="team-panel pb" id="panel-b">
+    <div class="team-panel pb">
       <div class="tp-header">
         <div class="tp-name" id="tp-name-b">الفريق ب</div>
         <div class="tp-count"><span id="standing-b">3</span> واقف</div>
       </div>
-      <div class="zone-label">واقف</div>
+      <div class="zone-label">🧍 واقف</div>
       <div class="zone-players" id="zone-stand-b"></div>
-      <div class="zone-label" style="margin-top:.6rem">الكنبة</div>
+      <div class="zone-label" style="margin-top:.6rem">🛋️ الكنبة</div>
       <div class="couch-zone" id="zone-couch-b"></div>
     </div>
   </div>
-
   <div class="q-box">
     <div class="q-box-inner">
       <div>
@@ -252,25 +236,23 @@ input[type=text]:focus{border-color:var(--gold)}
       </div>
     </div>
   </div>
-
   <div class="buzz-bar">
     <div class="buzz-ind" id="buzz-ind-a">في الانتظار</div>
     <div class="buzz-ind" id="buzz-ind-b">في الانتظار</div>
   </div>
-
   <div class="action-box" id="action-box">
     <div class="action-title" id="action-title">حكّم الإجابة</div>
-    <div class="action-sub">تحقق من بطاقة الإجابة الخضراء ثم اختر:</div>
+    <div class="action-sub" id="action-sub">تحقق من بطاقة الإجابة الخضراء ثم اختر:</div>
     <div class="action-btns" id="action-btns"></div>
   </div>
-
   <div class="footer-bar">
     <div style="display:flex;gap:.75rem;flex-wrap:wrap">
       <button class="ctrl" id="show-qr-a">رابط الفريق أ</button>
       <button class="ctrl" id="show-qr-b">رابط الفريق ب</button>
     </div>
-    <div style="display:flex;gap:.5rem">
-      <button class="undo-btn" id="undo-btn">تراجع ↩</button>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="undo-btn" id="undo-btn">↩ تراجع</button>
+      <button class="redo-btn" id="redo-btn">إعادة ↪</button>
       <button class="skip-btn" id="skip-btn">تخطي السؤال</button>
       <button class="ctrl" id="next-q-btn" style="display:none">السؤال التالي ←</button>
       <button class="ctrl" id="new-game-btn">لعبة جديدة</button>
@@ -278,7 +260,6 @@ input[type=text]:focus{border-color:var(--gold)}
   </div>
 </div>
 
-<!-- QR MODAL -->
 <div class="modal-bg" id="qr-modal">
   <div class="modal">
     <button class="modal-close" id="modal-close">✕</button>
@@ -292,7 +273,7 @@ input[type=text]:focus{border-color:var(--gold)}
 <div id="winner">
   <h1 id="winner-name">فاز الفريق!</h1>
   <p>كل اللاعبين على الكنبة!</p>
-  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem">
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
     <button class="w-btn" id="rematch-btn">🔁 إعادة مع نفس الفريق</button>
     <button class="w-btn" style="background:var(--surface);color:var(--text);border:1px solid var(--border)" onclick="location.reload()">لعبة جديدة</button>
   </div>
@@ -312,21 +293,19 @@ input[type=text]:focus{border-color:var(--gold)}
 })();
 
 // ── QUESTION BANK ──
-let QUESTION_BANK = [];
-
+let QUESTION_BANK=[];
 (async()=>{
   try{
-    const res = await fetch('/questions.json');
-    QUESTION_BANK = await res.json();
-    document.getElementById('bank-count').textContent = QUESTION_BANK.length;
+    const res=await fetch('/questions.json');
+    QUESTION_BANK=await res.json();
+    document.getElementById('bank-count').textContent=QUESTION_BANK.length;
   }catch(e){
-    console.warn('Could not load questions.json, using fallback');
-    QUESTION_BANK = [
+    QUESTION_BANK=[
       {q:"ما هي عاصمة فرنسا؟",a:"باريس"},
       {q:"ما أكبر كوكب في المجموعة الشمسية؟",a:"المشتري"},
       {q:"من اخترع الهاتف؟",a:"ألكسندر غراهام بيل"},
     ];
-    document.getElementById('bank-count').textContent = QUESTION_BANK.length;
+    document.getElementById('bank-count').textContent=QUESTION_BANK.length;
   }
 })();
 
@@ -350,132 +329,109 @@ function renderQA(){
     row.innerHTML=`<input class="qa-inp" type="text" placeholder="سؤال ${i+1}" value="${esc(e.q)}" data-i="${i}" data-f="q"/><span class="qa-sep">←</span><input class="qa-inp" type="text" placeholder="الجواب" value="${esc(e.a)}" data-i="${i}" data-f="a"/><button class="qa-del" data-i="${i}">✕</button>`;
     list.appendChild(row);
   });
-  list.querySelectorAll('.qa-inp').forEach(inp=>{
-    inp.addEventListener('input',ev=>{qaEntries[+ev.target.dataset.i][ev.target.dataset.f]=ev.target.value;syncNote();});
-  });
-  list.querySelectorAll('.qa-del').forEach(btn=>{
-    btn.addEventListener('click',ev=>{qaEntries.splice(+ev.target.dataset.i,1);renderQA();});
-  });
+  list.querySelectorAll('.qa-inp').forEach(inp=>{inp.addEventListener('input',ev=>{qaEntries[+ev.target.dataset.i][ev.target.dataset.f]=ev.target.value;syncNote();});});
+  list.querySelectorAll('.qa-del').forEach(btn=>{btn.addEventListener('click',ev=>{qaEntries.splice(+ev.target.dataset.i,1);renderQA();});});
   syncNote();
 }
-function syncNote(){
-  document.getElementById('default-note').style.display=qaEntries.filter(e=>e.q.trim()).length?'none':'block';
-}
-document.getElementById('add-qa-btn').addEventListener('click',()=>{
-  qaEntries.push({q:'',a:''});renderQA();
-  const ins=document.querySelectorAll('#qa-list .qa-inp[data-f="q"]');
-  if(ins.length) ins[ins.length-1].focus();
-});
+function syncNote(){document.getElementById('default-note').style.display=qaEntries.filter(e=>e.q.trim()).length?'none':'block';}
+document.getElementById('add-qa-btn').addEventListener('click',()=>{qaEntries.push({q:'',a:''});renderQA();const ins=document.querySelectorAll('#qa-list .qa-inp[data-f="q"]');if(ins.length)ins[ins.length-1].focus();});
 renderQA();
 
-// ── PUSHER SETUP ──
-let pusher=null, channel=null, ENDPOINT='', GAME_ID='';
+// ── PUSHER ──
+let pusher=null,channel=null,ENDPOINT='',GAME_ID='';
+const PUSHER_KEY='c053770b740bc3727dc7';
+const PUSHER_CLUSTER='ap2';
+ENDPOINT='https://couch-flame.vercel.app/api/pusher';
+pusher=new Pusher(PUSHER_KEY,{cluster:PUSHER_CLUSTER});
 
-// ── PUSHER CONFIG (hardcoded) ──
-const PUSHER_KEY = 'c053770b740bc3727dc7';
-const PUSHER_CLUSTER = 'ap2';
-ENDPOINT = 'https://couch-flame.vercel.app/api/pusher';
-pusher = new Pusher(PUSHER_KEY, {cluster: PUSHER_CLUSTER});
-
-// ── TRIGGER EVENT ──
-async function trigger(event, data){
-  try{
-    await fetch(ENDPOINT,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({channel:`game-${GAME_ID}`,event,data})
-    });
-  }catch(e){console.warn('Trigger failed',e);}
+async function trigger(event,data){
+  try{await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({channel:`game-${GAME_ID}`,event,data})});}
+  catch(e){console.warn('Trigger failed',e);}
 }
 
 // ── GAME STATE ──
 let G={names:{a:'',b:''},sizes:{a:3,b:3},players:{a:[],b:[]},questions:[],qIdx:0,round:1,phase:'idle',buzzedTeam:null,buzzedPlayerName:'',lockedOut:{}};
-let undoStack=[];
+let undoStack=[],redoStack=[];
 let idleTimer=null;
-const IDLE_TIMEOUT=2*60*60*1000; // 2 hours
+const IDLE_TIMEOUT=2*60*60*1000;
 
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
 
-// ── SAVE / RESTORE STATE ──
-function saveState(){
-  try{
-    sessionStorage.setItem('cc_game',JSON.stringify({G,GAME_ID,savedAt:Date.now()}));
-  }catch(e){}
-}
+function saveState(){try{sessionStorage.setItem('cc_game',JSON.stringify({G,GAME_ID,savedAt:Date.now()}));}catch(e){}}
+function clearSavedState(){sessionStorage.removeItem('cc_game');}
 
-function clearSavedState(){
-  sessionStorage.removeItem('cc_game');
-}
-
+// ── UNDO / REDO ──
 function pushUndo(){
   undoStack.push(JSON.stringify({G:JSON.parse(JSON.stringify(G)),GAME_ID}));
-  if(undoStack.length>5) undoStack.shift(); // keep last 5
+  if(undoStack.length>10) undoStack.shift();
+  redoStack=[];
   document.getElementById('undo-btn').style.display='inline-block';
+  document.getElementById('redo-btn').style.display='none';
 }
+document.getElementById('undo-btn').addEventListener('click',()=>{
+  if(!undoStack.length) return;
+  redoStack.push(JSON.stringify({G:JSON.parse(JSON.stringify(G)),GAME_ID}));
+  const prev=JSON.parse(undoStack.pop());
+  G=prev.G;
+  document.getElementById('undo-btn').style.display=undoStack.length?'inline-block':'none';
+  document.getElementById('redo-btn').style.display='inline-block';
+  renderTeams(); loadQuestion();
+});
+document.getElementById('redo-btn').addEventListener('click',()=>{
+  if(!redoStack.length) return;
+  undoStack.push(JSON.stringify({G:JSON.parse(JSON.stringify(G)),GAME_ID}));
+  const next=JSON.parse(redoStack.pop());
+  G=next.G;
+  document.getElementById('redo-btn').style.display=redoStack.length?'inline-block':'none';
+  document.getElementById('undo-btn').style.display='inline-block';
+  renderTeams(); loadQuestion();
+});
 
-// ── IDLE TIMEOUT ──
 function resetIdleTimer(){
   clearTimeout(idleTimer);
   idleTimer=setTimeout(()=>{
     if(G.phase==='done') return;
     trigger('timeout',{gameId:GAME_ID});
     clearSavedState();
-    alert('انتهت مدة الخمول (ساعتان). سيتم إعادة تحميل الصفحة.');
+    alert('انتهت مدة الخمول (ساعتان).');
     location.reload();
-  }, IDLE_TIMEOUT);
+  },IDLE_TIMEOUT);
 }
 
-// ── RESUME CHECK ──
+// ── RESUME ──
 (()=>{
   try{
     const saved=sessionStorage.getItem('cc_game');
     if(!saved) return;
     const {savedAt}=JSON.parse(saved);
-    // Ignore if older than 2 hours
-    if(Date.now()-savedAt > IDLE_TIMEOUT){ sessionStorage.removeItem('cc_game'); return; }
+    if(Date.now()-savedAt>IDLE_TIMEOUT){sessionStorage.removeItem('cc_game');return;}
     document.getElementById('resume-banner').classList.add('show');
   }catch(e){}
 })();
-
 document.getElementById('resume-yes').addEventListener('click',()=>{
-  try{
-    const saved=JSON.parse(sessionStorage.getItem('cc_game'));
-    G=saved.G; GAME_ID=saved.GAME_ID;
-    document.getElementById('resume-banner').classList.remove('show');
-    startGameUI();
-    loadQuestion();
-  }catch(e){ alert('تعذّر استئناف اللعبة.'); }
+  try{const saved=JSON.parse(sessionStorage.getItem('cc_game'));G=saved.G;GAME_ID=saved.GAME_ID;document.getElementById('resume-banner').classList.remove('show');startGameUI();loadQuestion();}catch(e){alert('تعذّر الاستئناف.');}
 });
+document.getElementById('resume-no').addEventListener('click',()=>{clearSavedState();document.getElementById('resume-banner').classList.remove('show');});
 
-document.getElementById('resume-no').addEventListener('click',()=>{
-  clearSavedState();
-  document.getElementById('resume-banner').classList.remove('show');
-});
-
+// ── START ──
 document.getElementById('start-btn').addEventListener('click',()=>{
   G.names.a=document.getElementById('name-a').value.trim()||'الفريق أ';
   G.names.b=document.getElementById('name-b').value.trim()||'الفريق ب';
   G.sizes.a=getSz('a');G.sizes.b=getSz('b');
-
-  // ── Duplicate game ID prevention ──
   GAME_ID=Math.random().toString(36).slice(2,8).toUpperCase();
-
-  ['a','b'].forEach(t=>{G.players[t]=[];for(let i=1;i<=G.sizes[t];i++) G.players[t].push({id:`${t}${i}`,label:`P${i}`,onCouch:false,playerName:''});});
+  ['a','b'].forEach(t=>{G.players[t]=[];for(let i=1;i<=G.sizes[t];i++)G.players[t].push({id:`${t}${i}`,label:`P${i}`,onCouch:false,playerName:'',locked:false});});
   const custom=qaEntries.filter(e=>e.q.trim());
   G.questions=shuffle(custom.length>=3?[...custom]:[...QUESTION_BANK,...custom]);
-  G.qIdx=0;G.round=1;G.phase='idle';
-  undoStack=[];
+  G.qIdx=0;G.round=1;G.phase='idle';G.lockedOut={};
+  undoStack=[];redoStack=[];
   clearSavedState();
-  startGameUI();
-  loadQuestion();
+  startGameUI();loadQuestion();
 });
 
 function startGameUI(){
   channel=pusher.subscribe(`game-${GAME_ID}`);
   channel.bind('buzz',onBuzzEvent);
   channel.bind('join',onJoinEvent);
-  channel.bind('leave',onLeaveEvent);
-  channel.bind('switch-team',onSwitchTeamEvent);
   document.getElementById('setup').style.display='none';
   document.getElementById('game').style.display='block';
   document.getElementById('tp-name-a').textContent=G.names.a;
@@ -486,138 +442,80 @@ function startGameUI(){
   resetIdleTimer();
 }
 
-// ── UNDO ──
-document.getElementById('undo-btn').addEventListener('click',()=>{
-  if(!undoStack.length) return;
-  const prev=JSON.parse(undoStack.pop());
-  G=prev.G;
-  if(!undoStack.length) document.getElementById('undo-btn').style.display='none';
-  renderTeams();
-  loadQuestion();
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round});
-});
-
-// ── SKIP BUTTON (always visible) ──
-document.getElementById('skip-btn').addEventListener('click',()=>{
-  if(G.phase==='done') return;
-  G.qIdx++;
-  G.phase='idle';
-  document.getElementById('action-box').style.display='none';
-  document.getElementById('next-q-btn').style.display='none';
-  trigger('action',{action:'SKIP',gameId:GAME_ID});
-  saveState();
-  resetIdleTimer();
-  loadQuestion();
-});
-
-// ── PLAYER EVENTS ──
-function onJoinEvent(data){
-  const {team,name,playerId}=data;
-
-  // Check if this player already exists (rejoining after refresh)
-  const existing=G.players[team]&&G.players[team].find(p=>p.playerName===name||p.label===name.slice(0,4));
-  if(existing){
-    // Player is rejoining — just resend state, no new slot
-    const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
-    trigger('game-state',state);
-    setTimeout(()=>trigger('game-state',state),600);
-    return;
-  }
-
-  // Check team full
-  const filled=G.players[team]?G.players[team].filter(p=>p.playerName!=='').length:0;
-  if(filled>=G.sizes[team]){
-    trigger('team-full',{gameId:GAME_ID,team,name,playerId});
-    return;
-  }
-
-  // Check duplicate name from a different player
-  const dupName=G.players[team]&&G.players[team].find(p=>p.playerName===name);
-  if(dupName&&playerId!==`${team}-${name}`){
-    trigger('name-taken',{gameId:GAME_ID,team,name,playerId});
-    return;
-  }
-
-  // New player — assign to empty slot
-  const p=G.players[team]&&G.players[team].find(pl=>pl.playerName==='');
-  if(p){p.playerName=name;p.label=name.slice(0,4);}
-  renderTeams();
-  saveState();
-  const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
-  trigger('game-state',state);
-  setTimeout(()=>trigger('game-state',state),600);
-}  
-
-function onBuzzEvent(data){
-  const {team,name}=data;
-  if(G.phase!=='idle') return;
-  if(G.lockedOut&&G.lockedOut[`${team}-${name}`]) return;
-  onBuzz(team,name);
-}
-
-// ── LEAVE ──
-function onLeaveEvent(data){
-  const {team,name,gameId}=data;
-  if(gameId!==GAME_ID) return;
-  const p=G.players[team]&&G.players[team].find(pl=>pl.playerName===name);
-  if(!p) return;
-  p.playerName=''; p.label=`P${G.players[team].indexOf(p)+1}`; p.onCouch=false;
-  renderTeams();
-  saveState();
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round});
-}
-
-// ── SWITCH TEAM ──
-function onSwitchTeamEvent(data){
-  const {fromTeam,toTeam,name,gameId}=data;
-  if(gameId!==GAME_ID) return;
-  const filled=G.players[toTeam]?G.players[toTeam].filter(p=>p.playerName!=='').length:0;
-  if(filled>=G.sizes[toTeam]){
-    trigger('team-full',{gameId:GAME_ID,team:toTeam,name,playerId:`${toTeam}-${name}`});
-    return;
-  }
-  // Remove from old team
-  const old=G.players[fromTeam]&&G.players[fromTeam].find(pl=>pl.playerName===name);
-  if(old){old.playerName='';old.label=`P${G.players[fromTeam].indexOf(old)+1}`;old.onCouch=false;}
-  // Add to new team
-  const slot=G.players[toTeam]&&G.players[toTeam].find(pl=>pl.playerName==='');
-  if(slot){slot.playerName=name;slot.label=name.slice(0,4);}
-  renderTeams();
-  saveState();
-  const state={gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round};
-  trigger('game-state',state);
-  setTimeout(()=>trigger('game-state',state),600);
-}
-
 // ── REMATCH ──
 document.getElementById('rematch-btn').addEventListener('click',()=>{
-  // Reset couch state for all players, keep names
-  ['a','b'].forEach(t=>{
-    G.players[t].forEach(p=>{ p.onCouch=false; });
-  });
+  ['a','b'].forEach(t=>{G.players[t].forEach(p=>{p.onCouch=false;p.locked=false;});});
   G.questions=shuffle([...G.questions]);
-  G.qIdx=0; G.round=1; G.phase='idle'; G.buzzedTeam=null; G.buzzedPlayerName=''; G.lockedOut={};
-  undoStack=[];
+  G.qIdx=0;G.round=1;G.phase='idle';G.buzzedTeam=null;G.buzzedPlayerName='';G.lockedOut={};
+  undoStack=[];redoStack=[];
   document.getElementById('winner').classList.remove('show');
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
   document.getElementById('undo-btn').style.display='none';
-  saveState();
-  renderTeams();
-  loadQuestion();
+  document.getElementById('redo-btn').style.display='none';
+  saveState();renderTeams();loadQuestion();
   trigger('rematch',{gameId:GAME_ID,names:G.names,players:G.players});
 });
 
-
-// ── NEXT QUESTION ──
-document.getElementById('next-q-btn').addEventListener('click',()=>{
-  G.qIdx++; G.round++;
+// ── SKIP ──
+document.getElementById('skip-btn').addEventListener('click',()=>{
+  if(G.phase==='done') return;
+  G.qIdx++;G.phase='idle';
   document.getElementById('action-box').style.display='none';
   document.getElementById('next-q-btn').style.display='none';
-  saveState();
-  resetIdleTimer();
-  loadQuestion();
+  trigger('action',{action:'SKIP',gameId:GAME_ID});
+  saveState();resetIdleTimer();loadQuestion();
 });
+
+// ── NEXT Q ──
+document.getElementById('next-q-btn').addEventListener('click',()=>{
+  G.qIdx++;G.round++;
+  document.getElementById('action-box').style.display='none';
+  document.getElementById('next-q-btn').style.display='none';
+  saveState();resetIdleTimer();loadQuestion();
+});
+
+// ── JOIN ──
+function onJoinEvent(data){
+  const {team,name,playerId}=data;
+  const existing=G.players[team]&&G.players[team].find(p=>p.playerName===name);
+  if(existing){
+    const state=buildState();
+    trigger('game-state',state);setTimeout(()=>trigger('game-state',state),600);
+    return;
+  }
+  const filled=G.players[team]?G.players[team].filter(p=>p.playerName!=='').length:0;
+  if(filled>=G.sizes[team]){trigger('team-full',{gameId:GAME_ID,team,name,playerId});return;}
+  const dupName=G.players[team]&&G.players[team].find(p=>p.playerName===name);
+  if(dupName){trigger('name-taken',{gameId:GAME_ID,team,name,playerId});return;}
+  const p=G.players[team]&&G.players[team].find(pl=>pl.playerName==='');
+  if(p){p.playerName=name;p.label=name.slice(0,4);}
+  renderTeams();saveState();
+  const state=buildState();
+  trigger('game-state',state);setTimeout(()=>trigger('game-state',state),600);
+}
+
+// ── BUZZ ──
+function onBuzzEvent(data){
+  const {team,name}=data;
+  if(G.phase!=='idle') return;
+  // Lockout A: locked until someone else buzzes — clear lock when a *different* player buzzes
+  if(G.lockedOut[`${team}-${name}`]) return;
+  // If there's a lockedOut player and a NEW player buzzes → clear all locks (someone else went)
+  G.lockedOut={};
+  onBuzz(team,name);
+}
+
+function onBuzz(team,playerName){
+  G.buzzedPlayerName=playerName;
+  G.phase='buzzed';G.buzzedTeam=team;
+  const ind=document.getElementById(`buzz-ind-${team}`);
+  ind.className='buzz-ind fired';
+  ind.textContent=`${playerName||G.names[team]} ضغط الجرس!`;
+  document.getElementById('q-status').textContent=`${playerName||G.names[team]} ضغط الجرس — حكّم الإجابة!`;
+  trigger('buzzed',{team,name:playerName||G.names[team],gameId:GAME_ID});
+  showActions(team);
+}
 
 // ── RENDER ──
 function renderTeams(){
@@ -628,15 +526,19 @@ function renderTeams(){
     const locked=G.lockedOut||{};
     document.getElementById(`zone-stand-${t}`).innerHTML=standing.map(p=>{
       const isLocked=!!locked[`${t}-${p.playerName}`];
-      const display=(p.playerName||p.label)+(isLocked?' 🔒':'');
-      return `<div class="token ${cls}${isLocked?' locked':''}" title="${p.playerName||p.label}">${display}</div>`;
+      return `<div class="token ${cls}${isLocked?' locked':''}" title="${p.playerName||p.label}">${p.playerName||p.label}${isLocked?' 🔒':''}</div>`;
     }).join('');
     document.getElementById(`zone-couch-${t}`).innerHTML=couch.map(p=>
       `<div class="token ${cls} couch" title="${p.playerName||p.label}">${p.playerName||p.label}</div>`
     ).join('');
     document.getElementById(`standing-${t}`).textContent=standing.length;
   });
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round,lockedOut:G.lockedOut||{}});
+  trigger('game-state',buildState());
+}
+
+function buildState(){
+  const qText=G.questions[G.qIdx]?.q||'';
+  return {gameId:GAME_ID,names:G.names,players:G.players,phase:G.phase,qIdx:G.qIdx,round:G.round,lockedOut:G.lockedOut||{},qText};
 }
 
 function loadQuestion(){
@@ -645,13 +547,12 @@ function loadQuestion(){
   document.getElementById('buzz-ind-b').className='buzz-ind';
   document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
   document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
-  G.phase='idle'; G.buzzedTeam=null; G.lockedOut={};
+  G.phase='idle';G.buzzedTeam=null;G.lockedOut={};
   if(G.qIdx>=G.questions.length){
     document.getElementById('q-text').textContent='لا مزيد من الأسئلة! ابدأ لعبة جديدة.';
     document.getElementById('q-status').textContent='';
     document.getElementById('answer-text').textContent='—';
-    trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round,lockedOut:{}});
-    return;
+    trigger('game-state',buildState());return;
   }
   const item=G.questions[G.qIdx];
   document.getElementById('q-text').textContent=item.q;
@@ -660,42 +561,28 @@ function loadQuestion(){
   document.getElementById('ql-n').textContent=G.qIdx+1;
   document.getElementById('q-n').textContent=G.qIdx+1;
   document.getElementById('round-n').textContent=G.round;
-  trigger('game-state',{gameId:GAME_ID,names:G.names,players:G.players,phase:'idle',qIdx:G.qIdx,round:G.round});
-}
-function onBuzz(team,playerName){
-  G.buzzedPlayerName=playerName;
-  if(G.phase!=='idle') return;
-  G.phase='buzzed';G.buzzedTeam=team;
-  const ind=document.getElementById(`buzz-ind-${team}`);
-  ind.className='buzz-ind fired';
-  ind.textContent=`${playerName||G.names[team]} ضغط الجرس!`;
-  document.getElementById('q-status').textContent=`${playerName||G.names[team]} ضغط الجرس — تحقق من الإجابة!`;
-  trigger('buzzed',{team,name:playerName||G.names[team],gameId:GAME_ID});
-  showActions(team);
+  trigger('game-state',buildState());
 }
 
+// ── ACTIONS ──
 function showActions(team){
   const opp=team==='a'?'b':'a';
   const myStanding=G.players[team].filter(p=>!p.onCouch);
   const oppCouch=G.players[opp].filter(p=>p.onCouch);
   document.getElementById('action-box').style.display='block';
-  document.getElementById('action-title').textContent=`${G.names[team]} ضغط الجرس`;
-  const btns=document.getElementById('action-btns');
-  btns.innerHTML='';
-  if(myStanding.length>0) addBtn(btns,`صح — لاعب ${G.names[team]} يجلس`,()=>doSit(team),'correct');
-  oppCouch.forEach(p => {
-    addBtn(btns, `ارجع ${p.playerName || p.label}`, () => doPullPlayer(opp, p.id), 'correct');
-  });
-  if(!myStanding.length&&!oppCouch.length) addBtn(btns,'صح — لا يوجد إجراء (تخطّ)',()=>doWrong(),false);
-  addBtn(btns,'خطأ — إجابة خاطئة',()=>doWrong(),'wrong');
+  document.getElementById('action-title').textContent=`${G.buzzedPlayerName||G.names[team]} ضغط الجرس`;
+  document.getElementById('action-sub').textContent='تحقق من الإجابة ثم اختر:';
+  const btns=document.getElementById('action-btns');btns.innerHTML='';
+  if(myStanding.length>0) addBtn(btns,`✅ صح — يجلس على الكنبة`,()=>doSit(team),'correct');
+  oppCouch.forEach(p=>addBtn(btns,`🙋 صح — أرجع ${p.playerName||p.label}`,()=>doPullPlayer(opp,p.id),'correct'));
+  if(!myStanding.length&&!oppCouch.length) addBtn(btns,'✅ صح — لا إجراء (تخطّ)',()=>{G.qIdx++;G.round++;document.getElementById('action-box').style.display='none';saveState();loadQuestion();},false);
+  addBtn(btns,'❌ خطأ — يبقى واقفاً',()=>doWrong(),'wrong');
 }
 
 function addBtn(c,l,fn,cls){
   const b=document.createElement('button');
   b.className='act-btn'+(cls?' '+cls:'');b.textContent=l;b.addEventListener('click',fn);c.appendChild(b);
 }
-
-function hideAnswer(){document.getElementById('answer-card').classList.remove('show');}
 
 function doSit(team){
   const standing=G.players[team].filter(p=>!p.onCouch);
@@ -704,9 +591,7 @@ function doSit(team){
   const buzzer=standing.find(p=>p.playerName===G.buzzedPlayerName)||standing[0];
   buzzer.onCouch=true;
   G.qIdx++;G.round++;
-  renderTeams();
-  saveState();
-  resetIdleTimer();
+  renderTeams();saveState();resetIdleTimer();
   trigger('action',{action:'SIT',team,gameId:GAME_ID});
   checkWin(team);
 }
@@ -716,30 +601,31 @@ function doPullPlayer(oppTeam,playerId){
   if(!p) return;
   pushUndo();
   p.onCouch=false;
-  renderTeams();
-  saveState();
-  resetIdleTimer();
+  renderTeams();saveState();resetIdleTimer();
   trigger('action',{action:'PULL',team:oppTeam,gameId:GAME_ID});
   document.getElementById('action-box').style.display='none';
   document.getElementById('q-status').textContent=`${p.playerName||p.label} رجع للعبة!`;
   document.getElementById('next-q-btn').style.display='inline-block';
 }
 
+// Lockout style A: wrong player locked until ANYONE ELSE buzzes on this question
 function doWrong(){
-  // Lock out the player who buzzed wrong for this question
   if(G.buzzedTeam&&G.buzzedPlayerName){
     if(!G.lockedOut) G.lockedOut={};
     G.lockedOut[`${G.buzzedTeam}-${G.buzzedPlayerName}`]=true;
   }
-  G.phase='idle'; G.buzzedTeam=null;
+  // Show locked on buzz indicators
+  const lockedTeam=G.buzzedTeam;
+  G.phase='idle';G.buzzedTeam=null;
   document.getElementById('action-box').style.display='none';
-  document.getElementById('buzz-ind-a').className='buzz-ind';
-  document.getElementById('buzz-ind-b').className='buzz-ind';
-  document.getElementById('buzz-ind-a').textContent=`${G.names.a} — في الانتظار`;
-  document.getElementById('buzz-ind-b').textContent=`${G.names.b} — في الانتظار`;
-  document.getElementById('q-status').textContent='إجابة خاطئة — البقية يمكنهم الضغط!';
+  ['a','b'].forEach(t=>{
+    const ind=document.getElementById(`buzz-ind-${t}`);
+    ind.className=t===lockedTeam?'buzz-ind locked-out':'buzz-ind';
+    ind.textContent=t===lockedTeam?`${G.names[t]} — مقفل 🔒`:`${G.names[t]} — في الانتظار`;
+  });
+  document.getElementById('q-status').textContent='إجابة خاطئة! يمكن للباقين الضغط...';
   resetIdleTimer();
-  renderTeams(); // shows 🔒 on the locked player
+  renderTeams(); // shows 🔒 on locked player pill
   trigger('action',{action:'WRONG',gameId:GAME_ID,lockedOut:G.lockedOut});
 }
 
@@ -755,29 +641,24 @@ function checkWin(team){
   }
 }
 
-// ── QR / LINK ──
+// ── QR ──
 function getPlayerURL(team){
   const base=window.location.origin;
   return `${base}/player.html?game=${GAME_ID}&team=${team}&key=${encodeURIComponent(PUSHER_KEY)}&cluster=${encodeURIComponent(PUSHER_CLUSTER)}`;
 }
-
 document.getElementById('show-qr-a').addEventListener('click',()=>showQR('a'));
 document.getElementById('show-qr-b').addEventListener('click',()=>showQR('b'));
 document.getElementById('modal-close').addEventListener('click',()=>document.getElementById('qr-modal').classList.remove('open'));
-
 function showQR(team){
   const url=getPlayerURL(team);
   document.getElementById('modal-title').textContent=`${G.names[team]} — انضمام`;
   document.getElementById('modal-sub').textContent=`امسح الـ QR أو شارك الرابط مع لاعبي ${G.names[team]}`;
-  const canvas=document.getElementById('qr-canvas');
-  canvas.innerHTML='';
+  const canvas=document.getElementById('qr-canvas');canvas.innerHTML='';
   new QRCode(canvas,{text:url,width:180,height:180,colorDark:'#000',colorLight:'#fff'});
-  const cl=document.getElementById('copy-link');
-  cl.textContent=url;cl.href=url;
+  const cl=document.getElementById('copy-link');cl.textContent=url;cl.href=url;
   cl.onclick=e=>{e.preventDefault();navigator.clipboard.writeText(url).then(()=>{cl.textContent='تم النسخ!';setTimeout(()=>cl.textContent=url,1500);});};
   document.getElementById('qr-modal').classList.add('open');
 }
-
 document.getElementById('new-game-btn').addEventListener('click',()=>location.reload());
 </script>
 </body>
